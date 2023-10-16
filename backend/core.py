@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sys.path.append('./')
-
+from langchain.memory import ConversationBufferMemory
 from typing import Any
 
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -13,6 +13,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import FAISS
 
+# 추가할 내용 : qa = ConversationRetrievalCahin.from_llm() -> 검색해보기
 def run_llm(query: str) -> Any:
     embeddings = OpenAIEmbeddings()
     docsearch = FAISS.load_local("faiss_index_react", embeddings)

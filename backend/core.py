@@ -14,6 +14,7 @@ from langchain.chains import RetrievalQA, ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 # def run_llm(query: str) -> Any:
 #     embeddings = OpenAIEmbeddings()
@@ -33,9 +34,9 @@ def run_llm(query: str) -> Any:
     docsearch = FAISS.load_local("faiss_index_GNN", embeddings)
     # chat = ChatOpenAI(verbose=True, temperature=0)
 
-    
+    #
     custom_template = """
-    Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. At the end of standalone question add this 'Answer the question in German language.' If you do not know the answer reply with 'I am sorry'.
+    Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. If you do not know the answer reply with 'I am sorry'.
     Chat History:
     {chat_history}
     Follow Up Input: {question}
@@ -47,9 +48,14 @@ def run_llm(query: str) -> Any:
     memory = ConversationBufferMemory(memory_key="chat_history",
                                     output_key = 'answer',
                                     return_messages=True)
+    llm = llm=ChatOpenAI(verbose=True,
+                         temperature=0,
+                        #  streaming=True,
+                        #  callbacks=[StreamingStdOutCallbackHandler()]
+                        )
     
     qa = ConversationalRetrievalChain.from_llm(
-        llm=ChatOpenAI(verbose=True, temperature=0),
+        llm=llm,
         retriever = docsearch.as_retriever(),
         condense_question_prompt=CUSTOM_QUESTION_PROMPT,
         return_source_documents=True,

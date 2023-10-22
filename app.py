@@ -12,7 +12,7 @@ from streamlit_chat import message
 # Excel Base로 대답하는 챗봇 만들기 
 # PPT Base로 대답하는 챗봇 만들기 
 # 대화 내용을 기억하게 하려면, run_llm 에서 query에 뭔가를 추가해줘야 하나..?
-# 프롬프트 템플릿 추가.
+# 프롬프트 템플릿 추가. -> done
 
 def create_sources_string(source_urls: Set[str]) -> str:
     if not source_urls:
@@ -112,6 +112,8 @@ if db_type == "PDF papers":
                     sources = set([(doc.metadata['source'], doc.metadata['page']) for doc in generated_response["source_documents"]])
                     # formatted_response = (f"{generated_response['result']} \n {create_sources_string(sources)}")
                     # formatted_response = (f"{generated_response['answer']} \n {create_sources_string(sources)}")
+
+                    # formatted response 라는 말도 필요 없는거같은데? 이거 바꾸자
                     formatted_response = (f"{generated_response['answer']}")
                     
                     # st.write(formatted_response)
@@ -119,20 +121,17 @@ if db_type == "PDF papers":
                     full_response = ""
                     message_placeholder = st.empty()
                     
-                    # 답변 라이브 스트리밍
-                    for idx, chunk in enumerate(formatted_response.split()):
-                            
+                    # 답변 라이브 스트리밍 -> OpenAI에서 streaming=True 일 때 어떻게 쓰는지 나중에 추가
+                    for idx, chunk in enumerate(formatted_response.split()):  
                         full_response += chunk + " "
                         time.sleep(0.05)
-                        
-                        # 여기서 출처와 답변을 분리해야함
                         message_placeholder.markdown(full_response + "▌")
-                        
                         prev_chunk = chunk
-                    
                     full_response += create_sources_string(sources)
+                    
+                    # full_response += formatted_response
+                    # full_response += create_sources_string(sources)
                     message_placeholder.markdown(full_response)
-                    # st.session_state.messages.append({"role": "assistant", "content": formatted_response}) # Add response to message history
                     st.session_state.messages.append({"role": "assistant", "content": full_response}) # Add response to message history
 
 

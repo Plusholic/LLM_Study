@@ -28,7 +28,9 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 #     )
 #     return qa({"query": query})
     
-def run_llm(query: str) -> Any:
+def run_llm(query: str,
+            k : int,
+            threshold : float) -> Any:
     
     embeddings = OpenAIEmbeddings()
     docsearch = FAISS.load_local("faiss_index_GNN", embeddings)
@@ -56,7 +58,13 @@ def run_llm(query: str) -> Any:
     
     qa = ConversationalRetrievalChain.from_llm(
         llm=llm,
-        retriever = docsearch.as_retriever(),
+        retriever = docsearch.as_retriever(
+            search_type="similarity_score_threshold",
+            search_kwargs={
+                "k":k,
+                "score_threshold": threshold
+                }
+            ),
         condense_question_prompt=CUSTOM_QUESTION_PROMPT,
         return_source_documents=True,
         chain_type='refine',

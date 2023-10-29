@@ -24,6 +24,8 @@ def create_sources_string(source_urls: Set[str]) -> str:
     
     for i, source in enumerate(sources_list):
         sources_string += f"{i+1}. Path : {source[0]}\n Page : {source[1]}\n"
+        # sources_string += "{num} [link]({link}) \n Page : {page}\n".format(num = i+1, link=source[0], page=source[1])
+        # sources_string += "[link]({link})".format(link=source[0])
         
     return sources_string
 
@@ -37,12 +39,13 @@ if "user_prompt_history" not in st.session_state:
 if "chat_answers_history" not in st.session_state:
     st.session_state["chat_answers_history"] = []
     
-# if "messages" not in st.session_state.keys(): # Initialize the chat message history
-#     st.session_state.messages = [
-#         {"role": "assistant", "content": "Ask me a question about Graph Neural Network!"}
-#     ]
-#     with st.chat_message(st.session_state.messages[0]["role"]):
-#         st.write(st.session_state.messages[0]["content"])
+if "db_type" not in st.session_state:
+    st.session_state.db_type = "PDF papers"  # 초기 데이터베이스 유형
+if "k" not in st.session_state:
+    st.session_state.k = 4  # 초기 슬라이더 값 (k)
+if "threshold" not in st.session_state:
+    st.session_state.threshold = 0.5  # 초기 슬라이더 값 (threshold)
+
 
 
 with st.sidebar:
@@ -54,32 +57,26 @@ with st.sidebar:
                 key="visibility",
                 options=["PDF papers", "Notion", "Excel", "PPT"],
                 )
-   
-    # 자격증명 창 추가
-    # if ('EMAIL' in st.secrets) and ('PASS' in st.secrets):
-    #     st.success('HuggingFace Login credentials already provided!', icon='✅')
-    #     hf_email = st.secrets['EMAIL']
-    #     hf_pass = st.secrets['PASS']
-    # else:
-    #     hf_email = st.text_input('Enter E-mail:', type='password')
-    #     hf_pass = st.text_input('Enter password:', type='password')
-    #     if not (hf_email and hf_pass):
-    #         st.warning('Please enter your credentials!', icon='⚠️')
-    #     else:
-    #         st.success('Proceed to entering your prompt message!', icon='👉')
-    # st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-an-llm-powered-chatbot-with-streamlit/)!')
+    if db_type == "PDF papers":
+        # k = st.slider('How many references', 1, 20, 4)
+        # threshold = st.slider('How much scores', value=0.5, min_value=0.0, max_value=1.0, step=0.05)
+        st.session_state.k = st.slider('How many references', 1, 20, 4)
+        st.session_state.threshold = st.slider('How much scores', value=0.5, min_value=0.0, max_value=1.0, step=0.05)
 
-# Database Type을 PDF Papers로 했다면,
+
+       # 채팅 내역 있으면 보이게 해야함
+       
+    # Database Type을 PDF Papers로 했다면,
 if db_type == "PDF papers":
         
     st.title("Chat With Graph Neural Network References")
-
+    
+    # k = st.slider('How many references', 1, 50, 1)
     if "messages" not in st.session_state.keys(): # Initialize the chat message history
-        st.session_state.messages = [
-            # {"role": "assistant", "content": "Ask me a question about Graph Neural Network!"}
-        ]
+        st.session_state.messages = []
         st.session_state.messages.append({"role": "assistant", "content": "Ask me a question about Graph Neural Network!"})
-
+        
+        
         with st.chat_message(st.session_state.messages[0]["role"]):
             # st.write(st.session_state.messages[0]["content"])
             st.markdown(st.session_state.messages[0]["content"])
@@ -101,15 +98,24 @@ if db_type == "PDF papers":
             st.markdown(st.session_state.messages[-1]["content"])
         # 답변을 생성할때 스피너가 돌아가도록 세팅
         with st.spinner("Thinking..."):
-            generated_response = run_llm(query=prompt) 
-
+            try:
+                generated_response = run_llm(query=prompt,
+                                             k=st.session_state.k,
+                                             threshold=st.session_state.threshold)
+            except:
+                generated_response = {"source_documents" : "None",
+                                      "answer" : "I dont know"}
+            
         # 메세지가 챗봇으로부터 온게 아니라면 -> 유저로부터 온거라면, 응답을 생성함
         if st.session_state.messages[-1]["role"] != "assistant":
             
             # with chat_message() -> 채팅창에서 streamlit의 봇 프로필같은거 나오게함
             with st.chat_message("assistant"):
                     # 답변 생성
-                    sources = set([(doc.metadata['source'], doc.metadata['page']) for doc in generated_response["source_documents"]])
+                    try:
+                        sources = set([(doc.metadata['source'], doc.metadata['page']) for doc in generated_response["source_documents"]])
+                    except:
+                        sources = [("Not exists", "")]
                     # formatted_response = (f"{generated_response['result']} \n {create_sources_string(sources)}")
                     # formatted_response = (f"{generated_response['answer']} \n {create_sources_string(sources)}")
 
@@ -127,11 +133,12 @@ if db_type == "PDF papers":
                         time.sleep(0.05)
                         message_placeholder.markdown(full_response + "▌")
                         prev_chunk = chunk
+                        
                     full_response += create_sources_string(sources)
-                    
                     # full_response += formatted_response
                     # full_response += create_sources_string(sources)
                     message_placeholder.markdown(full_response)
+                    # st.markdown(create_sources_string(sources), unsafe_allow_html=True)
                     st.session_state.messages.append({"role": "assistant", "content": full_response}) # Add response to message history
 
 
@@ -144,7 +151,10 @@ elif db_type == "Notion":
     st.title("Chat With Graph Neural Network References")
     st.write('You Must select PDF papers')
     st.write('You current selected:', db_type)
-
+    
+    link='check out this [link](https://retailscope.africa/)'
+    st.markdown(link,unsafe_allow_html=True)
+    
 elif db_type == "Excel":
 
     st.title("Chat With Graph Neural Network References")

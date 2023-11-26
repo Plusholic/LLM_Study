@@ -3,3 +3,19 @@ openai-llm-main/
 
 # 환경변수 파일은 무시
 .env
+
+# 벡터 저장소 무시
+faiss_index_GNN
+faiss_index_react
+storage
+
+# 캐시 파일 무시
+.ipynb_checkpoints
+
+# 완성되기 전 테스트 파일 무시
+notion.ipynb
+llama_index_main.ipynb
+
+#뭔지 모르겠는 파일 무시
+db.json
+full-properties.json

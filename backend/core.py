@@ -10,7 +10,7 @@ from typing import Any
 
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA, ConversationalRetrievalChain
+from langchain.chains import RetrievalQA, ConversationalRetrievalChain, HypotheticalDocumentEmbedder, LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
@@ -33,16 +33,21 @@ def run_llm(query: str,
             threshold : float) -> Any:
     
     embeddings = OpenAIEmbeddings()
-    docsearch = FAISS.load_local("faiss_index_GNN", embeddings)
+    # docsearch = FAISS.load_local("faiss_index_256", embeddings)
+    # docsearch = FAISS.load_local("faiss_openai_512_sentence_splitter", embeddings)
+    docsearch = FAISS.load_local("faiss_openai_128_sentence_splitter", embeddings)
     # chat = ChatOpenAI(verbose=True, temperature=0)
 
-    #
+    # 답을 찾을 수 없는 경우, 답을 찾을 수 없다고 말하고 자체 지식에 의존하세요 라는 내용 추가
     custom_template = """
     Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. If you do not know the answer reply with 'I am sorry'.
+    If you can't find an answer, say you can't find an answer and rely on your own knowledge.
     Chat History:
     {chat_history}
-    Follow Up Input: {question}
-    Standalone question:"""
+    
+    Question:
+    {question}
+    Answers:"""
 
     CUSTOM_QUESTION_PROMPT = PromptTemplate.from_template(custom_template)
 
@@ -50,6 +55,7 @@ def run_llm(query: str,
     memory = ConversationBufferMemory(memory_key="chat_history",
                                     output_key = 'answer',
                                     return_messages=True)
+    
     llm = llm=ChatOpenAI(verbose=True,
                          temperature=0,
                         #  streaming=True,
@@ -76,10 +82,5 @@ def run_llm(query: str,
 
 
 
-
-
-
-
-
 if __name__ == "__main__":
-    print(run_llm(query="What is DropEdge"))
+    print(run_llm(query="What is DropEdge", k=3, threshold=0.5))

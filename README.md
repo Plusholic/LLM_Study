@@ -3,7 +3,7 @@
 
 ## 프롬프트 관련
 
-[논문 1](paper/논문1.md)
+[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](paper/CoT.md)
 
 ## 파운데이션 모델 관련
 

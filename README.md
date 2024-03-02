@@ -7,4 +7,17 @@
 
 ## 파운데이션 모델 관련
 
+## 추천시스템
+
+1. [A Survey on Large Language Models for Recommendation](papers/A_Survey_on_LLMs_for_Recommendation.md)
+
 ## 양자화 관련
+
+
+
+### 데이터셋 관련
+
+1. 
+2. 
+3. 
+4. 

@@ -19,7 +19,7 @@ def create_sources_string(source_urls: Set[str]) -> str:
         return ""
     sources_list = list(source_urls)
     sources_list.sort()
-    sources_string = "reference sources:\n"
+    sources_string = "\n\n reference sources:\n"
     # sources_page = "page:\n"
     
     for i, source in enumerate(sources_list):
@@ -28,6 +28,7 @@ def create_sources_string(source_urls: Set[str]) -> str:
         # sources_string += "[link]({link})".format(link=source[0])
         
     return sources_string
+    # return source[0], source[1]
 
 
 st.header("Plusholic Knowledge Database")
@@ -68,7 +69,7 @@ with st.sidebar:
        
     # Database Type을 PDF Papers로 했다면,
 if db_type == "PDF papers":
-        
+    source_dict = {}
     st.title("Chat With Graph Neural Network References")
     
     # k = st.slider('How many references', 1, 50, 1)
@@ -136,7 +137,20 @@ if db_type == "PDF papers":
                         
                     full_response += create_sources_string(sources)
                     # full_response += formatted_response
-                    # full_response += create_sources_string(sources)
+                    # source_path, source_page = create_sources_string(sources)
+                    # source_dict[source_page].append(source_page)
+                    
+                    # 이거 검색 가능하게 바꾸자
+                    from streamlit_file_browser import st_file_browser
+                    # print(create_sources_string(sources)[4:-6])
+                    # 이거 어떻게 수정하지..
+                    event = st_file_browser(
+                        key='S',
+                        path='/Users/jeonjunhwi/문서/Projects/GNN_Covid/refference/GNN논문/Data-Driven',
+                        show_choose_file=True,
+                        show_download_file=False)
+                    st.write(event)
+                    
                     message_placeholder.markdown(full_response)
                     # st.markdown(create_sources_string(sources), unsafe_allow_html=True)
                     st.session_state.messages.append({"role": "assistant", "content": full_response}) # Add response to message history

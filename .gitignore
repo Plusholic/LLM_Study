@@ -19,3 +19,20 @@ llama_index_main.ipynb
 #뭔지 모르겠는 파일 무시
 db.json
 full-properties.json
+
+# 연습 파일들 무시
+faiss_openai_128
+faiss_openai_128_sentence_splitter
+faiss_index_256
+faiss_openai_512
+faiss_openai_512_sentence_splitter
+backend
+llama.cpp
+Qwen
+Retrieval_Database
+test_Qdrant
+data
+llamaindex_study/assets
+llamaindex_study/databases
+llamaindex_study/storage
+llamaindex_study/.env

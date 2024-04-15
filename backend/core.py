@@ -73,7 +73,7 @@ def run_llm(query: str,
             ),
         condense_question_prompt=CUSTOM_QUESTION_PROMPT,
         return_source_documents=True,
-        chain_type='refine',
+        chain_type='map_reduce',
         memory=memory
     )
     

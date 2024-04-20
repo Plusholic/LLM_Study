@@ -2,15 +2,22 @@
 
 ## Red Teaming
 
-1. [Red Teaming Language Models to Reduce Harms:Methods, Scaling Behaviors, and Lessons Learned](papers/Red%20Teaming%20Language%20Models%20to%20Reduce%20Harms:Methods,%20Scaling%20Behaviors,%20and%20Lessons%20Learned/Red%20Teaming%20Language%20Models%20to%20Reduce%20Harms:Methods,%20Scaling%20Behaviors,%20and%20Lessons%20Learned.md)
+1. [Red Teaming Language Models to Reduce Harms:Methods, Scaling Behaviors, and Lessons Learned](papers/Red_Teaming_Language_Models_to_Reduce Harms.md)
 2. [Red Teaming Language Models with Language Modelsd](papers/Red%20Teaming%20Language%20Models%20with%20Language%20Models.md)
-
+3. [Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations](papers/Llama%20Guard/Llama_Guard.md)
 
 ## Prompt
 
 1. [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](papers/CoT.md)
 
+## Training Methods
+
 ## Foundation Models
+
+1. [LLaMA2]
+2. [Qwen]
+3. [Mistral]
+4. [FLAN T5]
 
 ## Recommendation System
 
@@ -18,11 +25,6 @@
 
 ## Quantization
 
+## Reviews
 
-
-### 데이터셋 관련
-
-1. 
-2. 
-3. 
-4. 
+## Dataset

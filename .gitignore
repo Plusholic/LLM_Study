@@ -1,3 +1,6 @@
+# pdf 확장자 무시
+*.pdf
+
 # 예제 파일은 무시
 openai-llm-main/
 

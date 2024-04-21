@@ -3,7 +3,7 @@
 ## Red Teaming
 
 1. [Red Teaming Language Models to Reduce Harms:Methods, Scaling Behaviors, and Lessons Learned](papers/Red_Teaming_Language_Models_to_Reduce_Harms/Red_Teaming_Language_Models_to_Reduce%20Harms.md)
-2. [Red Teaming Language Models with Language Models](papers/Red_Teaming_Language_Models_with_Language_Models/Red Teaming Language Models with Language Models.md)
+2. [Red Teaming Language Models with Language Models](papers/Red_Teaming_Language_Models_with_Language_Models/Red_Teaming_Language_Models_with_Language_Models.md)
 3. [Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations](papers/Llama%20Guard/Llama_Guard.md)
 
 ## Prompt

@@ -15,10 +15,10 @@
 
 ## Foundation Models
 
-1. [LLaMA2]
-2. [Qwen]
+1. [LIMA](papers/LIMA/LIMA.md)
+2. [LLaMA2]
+3. [Qwen]
 4. [FLAN T5]
-5. [LIMA]
 6. [vicuna]
 7. [GPT-1]
 8. [GPT-2]

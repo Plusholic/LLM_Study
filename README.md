@@ -12,7 +12,7 @@
 2. [Graph Prompting]
 
 ## Fine Tuning
-1. [PEFT of LLaMA for the Clinical Domain](papers/PEFT of LLaMA for the Clinical Domain/PEFT of LLaMA for the Clinical Domain.md)
+1. [PEFT of LLaMA for the Clinical Domain](papers/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain.md)
 
 ## Foundation Models
 

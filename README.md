@@ -11,7 +11,8 @@
 1. [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](papers/CoT.md)
 2. [Graph Prompting]
 
-## Training Methods
+## Fine Tuning
+1. [PEFT of LLaMA for the Clinical Domain](papers/PEFT of LLaMA for the Clinical Domain/PEFT of LLaMA for the Clinical Domain.md)
 
 ## Foundation Models
 

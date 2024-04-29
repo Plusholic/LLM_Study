@@ -14,7 +14,10 @@
 ## Fine Tuning
 1. [PEFT of LLaMA for the Clinical Domain](papers/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain.md)
 
-## Foundation Models
+## Methods
+1. [Retrieval-Augmented Generation for Knoledge-Intensive NLP Task(수정중)](papers/Retrieval-Augmented Generation%20for%20Knowledge-Intensive%20NLP%20Tasks/main.md)
+
+## Models
 
 1. [LIMA](papers/LIMA/LIMA.md)
 2. [LLaMA2]
@@ -23,6 +26,7 @@
 6. [vicuna]
 7. [GPT-1]
 8. [GPT-2]
+9. [CLOVA X Technical Report]
 
 ## Recommendation System
 

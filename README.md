@@ -15,7 +15,7 @@
 1. [PEFT of LLaMA for the Clinical Domain](papers/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain.md)
 
 ## Methods
-1. [Retrieval-Augmented Generation for Knoledge-Intensive NLP Task(수정중)](papers/Retrieval-Augmented Generation%20for%20Knowledge-Intensive%20NLP%20Tasks/main.md)
+1. [Retrieval-Augmented Generation for Knoledge-Intensive NLP Task(수정중)](./papers/Retrieval-Augmented%20Generation%20for%20Knowledge-Intensive%20NLP%20Tasks/main.md)
 
 ## Models
 

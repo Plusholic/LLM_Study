@@ -7,6 +7,15 @@ Large Language Models 관련 논문 정리
 3. [Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations](papers/Llama%20Guard/contents.md)
 4. [AdvPrompter: Fast Adaptive Adversarial Prompting for LLMs]
 
+<details>
+<summary>Red Teaming Language Models to Reduce Harms:Methods, Scaling Behaviors, and Lessons Learned(papers/Red_Teaming_Language_Models_to_Reduce_Harms/contents.md)</summary>
+# 3 LINE SUMMARY
+- AI가 편견, 공격적 출력, 개인정보 유출 등 다양한 해로운 행동을 생성할 수 있기 때문에 레드팀을 활용함
+- Plane LM, Prompted LM, Rejection Sampling, Reinforcement Learning 등 모델 크기와 모델 형태에 따라 공격 성공률 측정
+- 언어모델이 생성할 수 있는 해로운 출력을 식별하고, 완화하기 위하여 레드팀 활동은 중요함
+</div>
+</details>
+
 ## Prompt
 
 1. [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](papers/CoT.md)
@@ -45,12 +54,3 @@ Large Language Models 관련 논문 정리
 ## Reviews
 
 ## Dataset
-
-<details>
-<summary>토글 접기/펼치기</summary>
-<div markdown="1">
-
-텍스트 , 이미지 등등 입력
-
-</div>
-</details>

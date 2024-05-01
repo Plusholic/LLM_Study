@@ -6,12 +6,10 @@ Large Language Models 관련 논문 정리
     <details>
     <summary>3 LINE SUMMARY</summary>
     <pre>
-```
-- AI가 편견, 공격적 출력, 개인정보 유출 등 다양한 해로운 행동을 생성할 수 있기 때문에 레드팀을 활용함
-- Plane LM, Prompted LM, Rejection Sampling, Reinforcement Learning 등 모델 크기와 모델 형태에 따라 공격 성공률 측정
-- 언어모델이 생성할 수 있는 해로운 출력을 식별하고, 완화하기 위하여 레드팀 활동은 중요함
-```
-</pre>
+    - AI가 편견, 공격적 출력, 개인정보 유출 등 다양한 해로운 행동을 생성할 수 있기 때문에 레드팀을 활용함
+    - Plane LM, Prompted LM, Rejection Sampling, Reinforcement Learning 등 모델 크기와 모델 형태에 따라 공격 성공률 측정
+    - 언어모델이 생성할 수 있는 해로운 출력을 식별하고, 완화하기 위하여 레드팀 활동은 중요함
+    </pre>
     </details>
 
 2. [Red Teaming Language Models with Language Models](papers/Red_Teaming_Language_Models_with_Language_Models/contents.md)

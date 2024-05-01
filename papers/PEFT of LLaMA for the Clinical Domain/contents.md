@@ -1,4 +1,10 @@
-[arxiv.org](https://arxiv.org/pdf/2307.03042)
+# 3 LINE SUMMARY
+- 임상 의료와 같은 특수한 분야에서는 LLM의 성능이 떨어지는 경향이 있음. 이를 PEFT를 활용하여 해결하고자 함
+- Downstram Task에 대해서 Adapter Tuning, LoRA, Prefix Tuning, P-Tuning, Prompt Tuning 등 비교
+- Clinical LLaMA-LoRA와 Downstream LLaMA-LoRA를 활용한 두 단계 PEFT 프레임워크를 제안하여, 각 Downstram Task에서 높은 성능을 달성
+
+원문링크
+[PEFT of LLaMA for the Clnical Domain](https://arxiv.org/pdf/2307.03042)
 
 # Abstract
 

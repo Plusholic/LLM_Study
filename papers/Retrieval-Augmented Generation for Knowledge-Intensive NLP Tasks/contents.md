@@ -1,14 +1,15 @@
-[Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401)
-
 # 3 Line SUMMARY
 
-- <span style="color:yellow">학습되지 않은 데이터에 엑세스 할 수 있는 생성 모델을 제시함</span>
-- <span style="color:yellow">사람들은 학습된 모델의 생성보다 RAG 생성을 더 선호하였음</span>
-- <span style="color:yellow">검색 인덱스를 교체하여 재교육 없이 모델을 업데이트 할 수 있는 방법을 설명함</span>
+- 학습되지 않은 데이터에 엑세스 할 수 있는 생성 모델을 제시함
+- 사람들은 학습된 모델의 생성보다 RAG 생성을 더 선호하였음
+- 검색 인덱스를 교체하여 재교육 없이 모델을 업데이트 할 수 있는 방법을 설명함
+
+원문 링크
+[Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401)
 
 ---
 
-# <span style="background-color:yellow">**Abstract**</span>
+# **Abstract**
 
 > 큰 사전 훈련된 언어 모델들이 파라미터에 사실 지식을 저장하고 있으며, downstream NLP task에 미세 조정될 때 최고의 성과를 냄. 그러나 이러한 모델들은 지식에 접근하고 정확하게 조작하는 능력이 제한되어 있어, 지식 집약적인 작업에서는 성능이 특정 아키텍처에 뒤처지는 경우가 많음. 또한, 결정에 대한 근거를 제공하고, 세계 지식을 업데이트하는 문제가 존재.
 > 
@@ -35,14 +36,14 @@
 - 하나의 문서만을 사용하여 전체 시퀀스를 생성합니다. 검색된 최상위 K 문서를 사용하여 시퀀스의 가능성을 계산하고, 이를 평균화합니다.
 - 하나의 문서만을 참조하기 z가 동일하여 우변이 성립
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/c78c2a8c-823d-47b3-a20e-d3cb6d6d505b/Untitled.png)
+![Untitled](./eq1.png)
 
 **RAG-Token**
 
 - 각 타겟 토큰을 예측할 때 다른 문서를 사용. 이는 생성기가 응답을 생성할 때 여러 문서의 내용을 선택적으로 사용할 수 있게 합니다.
 - 여러 문서를 참조하기 때문에 곱해서 더해줘야 함
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/f39d8d39-a62e-4b61-a05e-5d3a4657404f/Untitled.png)
+![Untitled](./eq2.png)
 
 ## 2.2 Retriever : DPR
 
@@ -147,7 +148,7 @@ $BERT_q$**(쿼리 인코더)**
 - RAG는 Natural Questions, WebQuestions, CuratedTrec 등의 데이터셋에서 최고의 성능을 보여주며, 기존의 Parametric, Non Parametric 접근 방식을 모두 능가.
 - 특히 RAG-Sequence와 RAG-Token 모델은 기존 BERT 기반 시퀀스 모델과 비교하여 더 나은 정확도를 달성함.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/30b1b6b0-2fc6-4c0e-a55e-cc689cb4bf42/Untitled.png)
+![Untitled](./table1.png)
 
 ## 4.2 Abstractive QA
 
@@ -165,13 +166,13 @@ $BERT_q$**(쿼리 인코더)**
 - 인간 평가에서도 RAG는 BART보다 더 사실적이고 구체적인 질문을 생성했다는 평가.
 - Table 3은 모델의 일반적인 Generation을 보여줌
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/02a645ce-6c70-40f2-a7b9-d2ee8180451c/Untitled.png)
+![Untitled](./table3.png)
 
 - 제퍼디 문제는 종종 두 개의 개별 정보를 포함하는 경우가 많은데, RAG-Token은 여러 문서의 콘텐츠를 결합한 답변을 생성할 수 있기 때문에 더 좋은 성능을 발휘할 수 있음
 - Sun을 생성한 다음엔 document 2의 posterior가 높아지고, A Farewell to Arms이 생성되었을 때는 documen 1의 posterior가 높아짐
 - First Token이 생성된 후에는 document의 posterior가 flatten됨. Non-Parametric구성 요소는 Parametric Memory에 저장 된 특정 지식을 끌어내어 생성하는 데 도움을 줌.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/d870a3c0-24b4-44ef-971e-ef5bafabc848/Untitled.png)
+![Untitled](./figure2.png)
 
 ## 4.4 Fact Verification
 
@@ -189,4 +190,4 @@ $BERT_q$**(쿼리 인코더)**
 - **Effect of Retrieving more documents**
     - RAG-Sequence의 오픈 도메인 QA의 결과가 개선되지만 RAG-Token의 경우 10개일 때가 최고의 성능
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/fa7f548e-9893-45fe-918e-af35e2da5eb6/Untitled.png)
+![Untitled](./figure3.png)

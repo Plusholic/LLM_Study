@@ -1,4 +1,10 @@
-[원문링크](https://arxiv.org/pdf/2209.07858.pdf)
+# 3 LINE SUMMARY
+- AI가 편견, 공격적 출력, 개인정보 유출 등 다양한 해로운 행동을 생성할 수 있기 때문에 레드팀을 활용함
+- Plane LM, Prompted LM, Rejection Sampling, Reinforcement Learning 등 모델 크기와 모델 형태에 따라 공격 성공률 측정
+- 언어모델이 생성할 수 있는 해로운 출력을 식별하고, 완화하기 위하여 레드팀 활동은 중요함
+
+원문링크
+[Red Teaming Language Models to Reduce Harms:Methods, Scaling Behaviors, and Lessons Learned](https://arxiv.org/pdf/2209.07858.pdf)
 
 # Abatract
 

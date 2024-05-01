@@ -1,3 +1,9 @@
+# 3 LINE SUMMARY
+- Perspective API, OpenAI Content Moderation API, Azure Content Safety API 등 Moderation API 등은 제공된 부분에 대해서만 분류하므로 원하는 상황에 맞게 적용하기 어렵고, 파인 튜닝할 수 없음
+- Llama2-7b를 기반으로 하며, 특정 안전 위험 분류(taxonomy)에 따라 라벨링된 데이터에 대해 지시 기반 튜닝(instruction-tuned) 적용
+- 성능 평가 결과, LLM 기반의 입출력 보호모델은 기존 Contents Moderation Tools보다 우수한 성능을 보였으며, ToxicChat과 OpenAI moderation dataset에서도 강력한 성능을 입증하였음
+
+원문링크
 [Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations](https://arxiv.org/abs/2312.06674)
 
 # Abstract

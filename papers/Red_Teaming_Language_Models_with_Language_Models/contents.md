@@ -1,3 +1,9 @@
+# 3 LINE SUMMARY
+- 인간 주석자는 비용이 많이 들고 다양성에서 제한이 있음
+- Red LM을 검증하기 위하여 Zero-Shot, Few-Shot, Supervised Learning, Reinforcement Learinig 등 다양한 환경에서 테스트
+- 레드 팀은 인간보다 먼저 테스트 할 수 있으며 Red LM은 LM를 안전하게 만들 수 있으며, 인간보다 여러 유형의 유해한 행동을 사전에 식별할 수 있음
+
+원문링크
 [Red Teaming Language Models with Language Models](https://arxiv.org/abs/2202.03286)
 
 # Abstract

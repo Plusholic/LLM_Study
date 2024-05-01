@@ -24,6 +24,7 @@
 ## Models
 
 1. [LIMA](papers/LIMA/contents.md)
+2. [OpenELM: An Efficient Language Model Family with Open-source Training and Inference Framework]
 2. [LLaMA2]
 3. [Qwen]
 4. [FLAN T5]

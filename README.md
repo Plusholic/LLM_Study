@@ -1,4 +1,4 @@
-# LLM 논문 정리
+Large Language Models 관련 논문 정리
 
 ## Red Teaming
 
@@ -23,8 +23,8 @@
 
 ## Models
 
-1. [LIMA](papers/LIMA/contents.md)
-2. [OpenELM: An Efficient Language Model Family with Open-source Training and Inference Framework]
+1. [LIMA](./papers/LIMA/contents.md)
+2. [OpenELM: An Efficient Language Model Family with Open-source Training and Inference Framework](./papers/OpenELM/contents.md)
 2. [LLaMA2]
 3. [Qwen]
 4. [FLAN T5]
@@ -45,3 +45,7 @@
 ## Reviews
 
 ## Dataset
+
+- ㅁㄴㅇ
+    
+    ㅁㄴㅇ

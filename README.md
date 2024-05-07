@@ -26,7 +26,7 @@ Large Language Models 관련 논문 정리
     - 성능 평가 결과, LLM 기반의 입출력 보호모델은 기존 Contents Moderation Tools보다 우수한 성능을 보였으며, ToxicChat과 OpenAI moderation dataset에서도 강력한 성능을 입증하였음
     </details>
 
-4. [AdvPrompter: Fast Adaptive Adversarial Prompting for LLMs]
+4. [AdvPrompter: Fast Adaptive Adversarial Prompting for LLMs(2024) 작성중](./papers/AdvPrompter/contents.md)
 
 
 ## Prompt

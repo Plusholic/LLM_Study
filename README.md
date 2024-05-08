@@ -26,8 +26,13 @@ Large Language Models 관련 논문 정리
     - 성능 평가 결과, LLM 기반의 입출력 보호모델은 기존 Contents Moderation Tools보다 우수한 성능을 보였으며, ToxicChat과 OpenAI moderation dataset에서도 강력한 성능을 입증하였음
     </details>
 
-4. [AdvPrompter: Fast Adaptive Adversarial Prompting for LLMs(2024) 작성중](./papers/AdvPrompter/contents.md)
-
+4. [AdvPrompter: Fast Adaptive Adversarial Prompting for LLMs(2024)](./papers/AdvPrompter/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - 자동으로 Adversarial Prompt를 생성하는 방법인 언어모델 AdvPrompter 개발
+    - AdvPrompter가 대상 LLM에 대한 공격을 시도할 때, 다양하고 자연스러운 적대적 접미사를 신속하게 생성할 수 있도록 설계되었고, 이 과정은 기울기 정보 없이도(Black Box 조건에사도) 공격이 가능함.
+    - AdvPrompter가 생성하는 적대적 프롬프트는 일관성 있고, 인간이 읽을 수 있는 자연어로, 난해도 기반 필터에 의해 감지되지 않으며, LLM의 안전성 향상을 위한 훈련 데이터로도 활용될 수 있음.
+    </details>
 
 ## Prompt
 

@@ -47,7 +47,7 @@ Large Language Models 관련 논문 정리
     - Downstram Task에 대해서 Adapter Tuning, LoRA, Prefix Tuning, P-Tuning, Prompt Tuning 등 비교<br>
     - Clinical LLaMA-LoRA와 Downstream LLaMA-LoRA를 활용한 두 단계 PEFT 프레임워크를 제안하여, 각 Downstram Task에서 높은 성능을 달성
     </details>
-2. 
+2. [LORA: LOW-RANK ADAPTATION OF LARGE LANGUAGE MODELS(2021) 작성중](papers/LoRA/contents.md)
 
 ## Methods
 1. [Retrieval-Augmented Generation for Knoledge-Intensive NLP Task(2020)](./papers/Retrieval-Augmented%20Generation%20for%20Knowledge-Intensive%20NLP%20Tasks/contents.md)

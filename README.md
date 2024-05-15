@@ -47,12 +47,12 @@ Large Language Models 관련 논문 정리
     - Downstram Task에 대해서 Adapter Tuning, LoRA, Prefix Tuning, P-Tuning, Prompt Tuning 등 비교<br>
     - Clinical LLaMA-LoRA와 Downstream LLaMA-LoRA를 활용한 두 단계 PEFT 프레임워크를 제안하여, 각 Downstram Task에서 높은 성능을 달성
     </details>
-2. [LORA: LOW-RANK ADAPTATION OF LARGE LANGUAGE MODELS(2021) 작성중](papers/LoRA/contents.md)
+2. [LORA: LOW-RANK ADAPTATION OF LARGE LANGUAGE MODELS(2021)](papers/LoRA/contents.md)
     <details>
     <summary>3 LINE SUMMARY</summary>
-    - 파인 튜닝을 위해선 모든 매개변수를 업데이트 하였으나 모델이 커질수록 많은 리소스를 요구하기에 매우 비실용적이고, 이를 해결하기 위해 LoRA라는 방법을 제안
-    - 이 방법은 Transformer 계층에 Low Rank Matrix를 주입함으로서 사전 훈련된 가중치는 고정하고, 변경될 가중치만을 학습하여 매개변수 수를 현저히 줄일 수 있음.
-    - Fine Tuning(Last 2 Layer), BiFit, Prefix-layer tuning, Prefix-embedding tuning, Adapter tuning등 다양한 방법과 비교했을 때 적은 파라미터를 학습하고도 성능은 유지되거나, 좋은 것을 확인
+    - 파인 튜닝을 위해선 모든 매개변수를 업데이트 하였으나 모델이 커질수록 많은 리소스를 요구하기에 매우 비실용적이고, 이를 해결하기 위해 LoRA라는 방법을 제안<br>
+    - 이 방법은 Transformer 계층에 Low Rank Matrix를 주입함으로서 사전 훈련된 가중치는 고정하고, 변경될 가중치만을 학습하여 매개변수 수를 현저히 줄일 수 있음<br>
+    - Fine Tuning(Last 2 Layer), BiFit, Prefix-layer tuning, Prefix-embedding tuning, Adapter tuning등 다양한 방법과 비교했을 때 적은 파라미터를 학습하고도 성능은 유지되거나, 좋은 것을 확인<br>
     </details>
 
 

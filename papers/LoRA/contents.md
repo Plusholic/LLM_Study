@@ -1,9 +1,19 @@
+https://github.com/microsoft/LoRA.
+https://arxiv.org/abs/2106.09685
+
+# 3 LINE SUMMARY
+
+- 파인 튜닝을 위해선 모든 매개변수를 업데이트 하였으나 모델이 커질수록 많은 리소스를 요구하기에 매우 비실용적이고, 이를 해결하기 위해 LoRA라는 방법을 제안
+- 이 방법은 Transformer 계층에 Low Rank Matrix를 주입함으로서 사전 훈련된 가중치는 고정하고, 변경될 가중치만을 학습하여 매개변수 수를 현저히 줄일 수 있음.
+- Fine Tuning(Last 2 Layer), BiFit, Prefix-layer tuning, Prefix-embedding tuning, Adapter tuning등 다양한 방법과 비교했을 때 적은 파라미터를 학습하고도 성능은 유지되거나, 좋은 것을 확인
+
+
+
 # Abstract
 
 > Low-Rank Adaptation(LoRA)은 전통적인 파인튜닝 방법에서 요구되는 모든 매개변수를 재학습하는 필요성을 크게 줄임. 사전 훈련된 모델의 가중치를 freeze 하고 Transformer 계층에 학습 가능한 Low Rank Matrix를 주입함으로써, LoRA는 파인튜닝된 GPT-3 모델과 비교할 때 학습 가능한 매개변수의 수를 최대 10,000배, GPU 메모리 요구 사항을 세 배 감소시킴. 학습 가능한 매개변수가 적음에도 불구하고 LoRA는 추가적인 추론 지연 없이 여러 NLP 작업 및 모델(RoBERTa, DeBERTa, GPT-2, GPT-3)에서 비교적 우수하거나 더 나은 품질을 보임.
 > 
 
-https://github.com/microsoft/LoRA.
 
 # Introduction
 
@@ -18,8 +28,7 @@ https://github.com/microsoft/LoRA.
 - 이에 저자들은 Low-Rank Adaptation, 즉 LoRA 방법을 제안. 이는 트랜스포머 아키텍처의 각 계층에 저랭크 분해 행렬을 주입하는 방식으로, 사전 훈련된 가중치는 고정하고, 변경될 가중치만을 학습하여 매개변수 수를 현저히 줄일 수 있음.
 - LoRA를 사용하면 그림 1과 같이 미리 학습된 가중치를 고정된 상태로 유지하면서 대신 Adaptation 중 고밀도 계층의 변화에 대한 rank decomposition matrix를 최적화하여 신경망의 일부 고밀도 계층을 간접적으로 학습할 수 있음.
 - GPT-3 175B를 예로 들면, 전체 랭크(즉, d)가 12,288에 달하는 경우에도 매우 낮은 랭크(그림 1의 r은 1~2개일 수 있음)로도 충분하므로 LoRA는 저장 및 컴퓨팅 효율이 모두 높음.
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/eb380ee5-a7cf-4b9d-910e-4c7aa80a0428/Untitled.png)
+![Untitled](figure1.png)
 
 # Problem Statement
 
@@ -27,14 +36,14 @@ https://github.com/microsoft/LoRA.
 > 
 - 전체 미세 조정 중에 모델은 사전 학습된 가중치 $\Phi_0$으로 초기화되고 조건부 언어 모델링 목표를 최대화하기 위해 기울기를 따라 반복적으로 $\Phi_0 + \Delta \Phi$로 업데이트
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/c01b510c-7bd3-43ac-8512-763cd6bc8e34/Untitled.png)
+![Untitled](eq1.png)
 
 - Full Fine Tuning의 주요 단점 중 하나는 각 다운스트림 작업마다 $|\Delta\Phi|$ 차원이 $|\Phi_0|$인 다른 파라미터 세트 $\Delta\Phi$를 학습한다는 점.
 - 따라서 사전 학습된 모델이 큰 경우(예: $|\Phi_0| \approx 175B$인 GPT-3), 미세 조정된 모델의 많은 독립적인 인스턴스를 저장하고 배포하는 것이 어려울 수 있음
 - 작업별 파라미터 증분 $\Delta\Phi = \Delta\Phi(\Theta)$를 $|\Theta| \ll |\Phi_0|$인 훨씬 더 작은 크기의 파라미터 $\Theta$ 집합으로 인코딩하는 보다 파라미터 효율적인 접근 방식을 채택.
 - 따라서 $\Delta\Phi$를 찾는 작업은 $\Theta$에 대한 최적화:
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/9fe12d70-be59-445c-919e-e0acbb60c579/Untitled.png)
+![Untitled](eq2.png)
 
 # AREN’T EXISTING SOLUTIONS GOOD ENOUGH?
 
@@ -44,7 +53,7 @@ https://github.com/microsoft/LoRA.
 - 이 구성은 모델의 복잡도를 증가시키며, 순차적으로 처리되어야 하므로 병렬 처리 능력을 충분히 활용할 수 없음.
 - 온라인 추론 상황에서는 일반적으로 배치 크기가 매우 작게 설정되며, 어댑터 레이어가 추가된 Transformer 모델은 작은 병목 차원에도 불구하고 순차적인 연산처리 때문에 느려지는 것을 확인할 수 있음(Table 1)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/6965beaf-4799-4ddf-b254-6dfe535713b0/Untitled.png)
+![Untitled](table1.png)
 
 - 입력 프롬프트를 직접 최적화하는 접근법은 최적화가 어렵고, 성능이 매개변수에 따라 비모노토닉하게 변동한다는 점을 확인.
 - 이는 작업에 사용할 수 있는 시퀀스 길이를 줄임으로써, 프롬프트 튜닝이 기타 방법들보다 성능이 떨어질 가능성이 있다는 우려를 제기합니다.
@@ -137,9 +146,9 @@ $$
 - $Adapter^P$ : 파이퍼 등(2021)에서 제안한 또 다른 설계와 매우 유사.
 - $Adapter^D$ : 효율성을 높이기 위해 일부 어댑터 레이어를 삭제하는 또 다른 baseline인 AdapterDrop(Ru ̈ckle ́ et al., 2020)도 포함시킴.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/4dc52ca8-455d-4ae0-8358-d7bc55c0d6fa/Untitled.png)
+![Untitled](table2.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/c5753d14-271d-4665-b6de-6b9b50e99d5b/Untitled.png)
+![Untitled](table3.png)
 
 **ROBERTA BASE/LARGE**
 
@@ -159,9 +168,9 @@ $$
 - LoRA는 세 데이터 세트 모두에서 미세 조정 기준선과 일치하거나 이를 초과(표 4)
 - 모든 방법이 훈련 가능한 파라미터가 많다고 해서 단조롭게 이점을 얻는 것은 아님(그림 2)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/28e7ce2b-c834-4a63-be94-ac84f1678a17/Untitled.png)
+![Untitled](table4.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/24f54127-6f61-44da-85ae-25455c5a5f10/Untitled.png)
+![Untitled](figure2.png)
 
 # RELATED WORKS
 
@@ -197,20 +206,69 @@ $$
 > LoRA가 실제로 언어 모델의 Adaptation에서 어떤 역할을 하는지, 그리고 왜 이러한 방식이 효과적인지를 이해하기 위한 여러 실험적 연구를 포함.
 > 
 
-### **연구 목적**
+## WHICH WEIGHT MATRICES IN TRANSFORMER SHOULD WE APPLY LORA TO?
 
-- **저랭크 업데이트의 효율성 분석**: 저랭크 업데이트가 모델 적응에 어떤 영향을 미치는지, 그리고 어떻게 그 효율성이 실현되는지에 대한 명확한 이해를 돕기 위해 실험적 연구를 수행합니다.
+LoRA(Low-Rank Adaptation) 기법을 활용해 제한된 파라미터 내에서 최적의 다운스트림 성능을 얻기 위해 어떤 유형의 가중치를 적응시켜야 하는지 실험. 여기서 제시된 연구는 특히 GPT-3 175B 모델의 자기 주의(self-attention) 모듈에 있는 가중치 행렬을 고려.
 
-### **주요 연구 내용**
-
-1. **업데이트 매트릭스의 진정한 저랭크 특성 확인**: 저랭크 구조가 실제로 언어 모델 적응에 있어 중요한 역할을 하는지를 탐구합니다. 특히, 업데이트가 이루어지는 가중치 Δ*W*의 랭크를 조절하여 어떻게 모델의 성능에 영향을 미치는지 관찰합니다.
+1. **파라미터 제한** : 1800만 개(약 35MB, FP16으로 저장 시)로 설정.
+    1. 이는 GPT-3 175B 모델의 96개 레이어 각각에 대해 한 종류의 주의 가중치를 적응시킬 때 *r*=8에 해, 두 종류의 가중치를 적응시킬 때는 *r*=4.
+2. **결과 요약**:
+    - 가중치 행렬 $W_q$ 또는 $W_k$에 모든 파라미터를 할당하면 성능이 크게 저하됨.
+    - 반면, $W_q$와 $W_v$에 같이 할당시키면 가장 좋은 성능을 보입니다.
+    - 이는 rank가 4인 경우에도 $\Delta W$에 충분한 정보를 담을 수 있으므로 순위가 큰 단일 유형의 가중치를 적용하는 것보다 더 많은 가중치 행렬을 적용하는 것이 바람직하다는 것을 의미.
     
-    Δ�
-    
-2. **효율적인 적응을 위한 최적의 랭크 탐색**: 다양한 랭크 설정에서 모델의 성능을 비교함으로써, 가장 효율적인 저랭크 값을 결정합니다. 이는 LoRA가 적절한 랭크 선택을 통해 모델 적응의 효율성을 최대화할 수 있음을 보여줍니다.
-3. **업데이트 매트릭스와 사전 훈련된 가중치 간의 상호작용 분석**: Δ*W*와 사전 훈련된 가중치 *W* 간의 상호작용을 분석하여, Δ*W*가 *W*의 어떤 특성을 강화하거나 보완하는지 탐구합니다. 이는 저랭크 업데이트가 어떻게 특정 작업에 대한 모델의 민감도를 조절하는지에 대한 통찰을 제공합니다.
 
-### **실험 결과 및 의미**
+![Untitled](table5.png)
 
-- **실질적인 결과**: 이 연구를 통해 LoRA의 저랭크 업데이트가 모델 적응에 있어서 중요한 부분이며, 효율적인 계산과 메모리 사용에 있어서 큰 이점이 있음을 확인할 수 있습니다.
-- **이론적 기여**: 저랭크 업데이트의 메커니즘에 대한 깊은 이해를 통해, 언어 모델의 사전 훈련 및 적응 과정에서 중요한 특성을 명확히 할 수 있습니다.
+## 7.2 WHAT IS THE OPTIMAL RANK r FOR LORA?
+
+- 여러 가중치 행렬을 적응시키면서 $r$값의 변화에 따른 성능을 비교.
+
+![Untitled](table6.png)
+
+- **Table 6**에 따르면, 매우 작은 $r$값에서도 LoRA는 경쟁력 있는 성능을 보임.
+- $W_q, W_v$를 적응시켰을 때 $W_q$ 단독보다 더 좋은 성능을 보입니다.
+- 따라서, 더 큰 *r* 값이 항상 더 좋은 성능을 보장하지 않으며, 효율적인 파라미터 사용을 위해 낮은 랭크가 적절할 수 있음.
+- $\Delta W$가 본질적으로 낮은 랭크에서 대부분의 필요한 정보를 포착할 수 있음.
+- 큰 이는 업데이트 행렬 $\Delta W$ 가 매우 작은 “내재적인 랭크(intrinsic rank)”를 가질 수 있음을 시사.
+
+**Subspace similarity between different** r
+
+- **특이값 분해(SVD)**:
+    - $*A_r=8*$과 $A_r=64$의 특이값 분해를 통해, 각각의 우측 특이 유니터리 행렬 $U_{A_r=8}$과 $U_{A_r=64}$ 계산.
+    - $U_{A_r=8}$의 상위 *i*개의 특이벡터가 형성하는 부분공간과 $U_{A_r=64}$의 상위 *j*개의 특이벡터가 형성하는 부분공간의 유사성을 분석.
+
+![Untitled](eq4.png)
+
+- **Grassmann 거리 기반의 정규화된 부분공간 유사성**:
+    - $*\phi(\cdot)*$ 함수는 [0, 1] 범위를 가지며, 1은 완전한 부분공간의 중첩, 0은 완전한 분리를 나타냅니다.
+    - *i*와 *j*의 값을 변화시키면서 $\phi$의 변화를 관찰(그림 3)
+    - $*A_r=8*$과 $A_r=64$의 상위 특이벡터 방향은 상당히 중첩되어 있으며, 특히 $*A_r=8*$과 $A_r=64$의 $\Delta W_v$와 $\Delta W_q$는 부분공간 차원 1을 공유하며, 그 유사도는 0.5 이상.
+    - 이는 *r*=1이 GPT-3의 다운스트림 작업에서 좋은 성능을 보이는 이유를 설명해줍니다.
+
+![Untitled](figure3.png)
+
+**Subspace similarity between different random seeds.**
+
+- $**\Delta W_q$의 높은 내재적 랭크**
+    - $**\Delta W_q**$는 $**\Delta W_v**$보다 더 많은 공통된 특이값 방향을 학습함.
+    - 이는 $**\Delta W_q**$가 더 중요한 정보들을 포착할 수 있음을 의미.
+- **랜덤 가우시안 행렬과의 비교**
+    - 랜덤 가우시안 행렬들은 서로 공통된 특이값 방향을 공유하지 않기 때문에, 부분공간 유사성이 낮음.
+    - 두 랜덤 시드로 학습된 적응 행렬들이 실제로 의미 있는 정보를 학습하고 있음을 확인.
+
+![Untitled](figure4.png)
+
+## 7.3 HOW DOES THE ADAPTATION MATRIX $**\Delta W**$ COMPARE TO W?
+
+- $**\Delta W$가 $W$와 높은 상관관계를 가지는가?** (수학적으로, $**\Delta W**$가 $**W**$의 상위 특이벡터 방향에 주로 포함되는가?)
+- $**\Delta W$는 $W$의 해당 방향에 비해 얼마나 큰가?**
+
+- $**W**$를 $**\Delta W**$의 $r$ 차원 부분공간에 투영하기 위해 $U^TWV^T$를 계산합니다. 여기서 $**U**$와 $**V**$는 $**\Delta W**$의 좌/우 특이벡터 행렬.
+- $||U^TWV^T||_F$와 $||W||_F$의 프로베니우스 노름을 비교.
+- 비교를 위해, $U$와 $V$를 $**W**$의 상위 *r* 특이벡터나 랜덤 행렬로 대체하여 $||U^TWV^T||_F$를 계산.
+
+- $**\Delta W**$는 랜덤 행렬과 비교했을 때 $**W**$와 더 강한 상관관계를 가짐. 이는 $**\Delta W**$가 $**W**$에 이미 존재하는 일부 특징을 증폭시킨다는 것을 나타냄.
+- $**\Delta W**$는 $**W**$의 상위 특이벡터 방향을 반복하지 않고, $**W**$에서 강조되지 않은 방향만 증폭시킴.
+
+![Untitled](table7.png)

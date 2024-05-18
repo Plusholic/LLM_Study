@@ -40,6 +40,7 @@ Large Language Models 관련 논문 정리
 2. [Graph Prompting]
 
 ## Fine Tuning
+
 1. [PEFT of LLaMA for the Clinical Domain(2023)](papers/PEFT%20of%20LLaMA%20for%20the%20Clinical%20Domain/contents.md)
     <details>
     <summary>3 LINE SUMMARY</summary>
@@ -58,6 +59,7 @@ Large Language Models 관련 논문 정리
 
 
 ## Methods
+
 1. [Retrieval-Augmented Generation for Knoledge-Intensive NLP Task(2020)](./papers/Retrieval-Augmented%20Generation%20for%20Knowledge-Intensive%20NLP%20Tasks/contents.md)
     <details>
     <summary>3 LINE SUMMARY</summary>
@@ -77,7 +79,17 @@ Large Language Models 관련 논문 정리
 3. [PEFT]
 4. [Bytepair Encoding] 
 
-## Models
+## Multi Modal Models
+
+1. [Visual Instruction Tuning(LLaVA, 2023)](./papers/LLaVA/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - 기존의 모델은 언어모델 따로, 비전 모델 따로 있어서 각 모델은 Downstream Task에 단일 모델로서 과제를 해결하지만, 사용자 지시에 대한 상호작용성이 제한됨<br>
+    - LLaVA라는 Multimodal 모델 개발. GPT-4를 이용해 COCO dataset에 대해서 대화, 세부 특징, 추론 등의 영역을 포함하는 Instruction Following Data를 생성하고, 평가 벤치마크를 구축<br>
+    - 실험 결과 LLaVA는 GPT-4와 비슷한 수준의 멀티모달 대화 성능을 보여줌
+    </details>
+
+## Large Language Models
 
 1. [LIMA: Less Is More for Alignment(2023)](./papers/LIMA/contents.md)
     <details>

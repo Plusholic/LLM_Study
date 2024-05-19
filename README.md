@@ -89,6 +89,9 @@ Large Language Models 관련 논문 정리
     - 실험 결과 LLaVA는 GPT-4와 비슷한 수준의 멀티모달 대화 성능을 보여줌
     </details>
 
+2. [Improved Baselines with Visual Instruction Tuning(LLaVA1.5, 2023, 작성중)](./papers/LLaVA1.5/contents.md)
+
+
 ## Large Language Models
 
 1. [LIMA: Less Is More for Alignment(2023)](./papers/LIMA/contents.md)

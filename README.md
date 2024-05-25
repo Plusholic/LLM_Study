@@ -90,6 +90,13 @@ Large Language Models 관련 논문 정리
     </details>
 
 2. [Improved Baselines with Visual Instruction Tuning(LLaVA1.5, 2023, 작성중)](./papers/LLaVA1.5/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - LLaVA는 Visual Instruct Tuning에서 뛰어난 능력을 보이지만 짧은 형식의 답변을 필요로 하는 학술적 벤치마크에서는 다소 부족한 부분이 존재함<br>
+    - LLaVA의 Vision-Language Connector를 Linear Projection에서 MLP로 바꿔서 표현력을 향상시켰으며, OCR 및 영역 수준 인식을 위한 데이터셋을 추가하였고, 입력 이미지 해상도를 높여 모델이 이미지의 세부사항을 명확히 볼 수 있도록 하였으며 LLM을 13B로 확장하는 방식으로 모델 성능을 향상시킴<br>
+    - LLaVA-1.5는 12개의 벤치마크 중 11개에서 최고 성능을 기록. 다른 방법들과 비교했을 때 훨씬 적은 사전 훈련 및 명령어 튜닝 데이터를 사용. Visual Instruction Tuning이 LMM의 성능 향상에 중요한 역할을 한다는 것을 시사하며, 대규모 사전 훈련이 필수적이라는 기존의 믿음에 의문을 제기
+    </details>
+
 
 
 ## Large Language Models

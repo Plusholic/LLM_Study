@@ -97,7 +97,9 @@ Large Language Models 관련 논문 정리
     - LLaVA-1.5는 12개의 벤치마크 중 11개에서 최고 성능을 기록. 다른 방법들과 비교했을 때 훨씬 적은 사전 훈련 및 명령어 튜닝 데이터를 사용. Visual Instruction Tuning이 LMM의 성능 향상에 중요한 역할을 한다는 것을 시사하며, 대규모 사전 훈련이 필수적이라는 기존의 믿음에 의문을 제기
     </details>
 
+## Diffusion Models
 
+1. [AnimateLCM: Accelerating the Animation of Personalized Diffusion Models and Adapters with Decoupled Consistency Learning(2024, 작성중)](./papers/AnimateLCM/contents.md)
 
 ## Large Language Models
 

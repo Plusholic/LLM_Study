@@ -121,3 +121,149 @@ $$
     $$
     
 - 여기서 $d(\cdot \ , \cdot)$는 거리 측정 함수이며, $\hat{x}_{t_n}^{\phi}$는 사전 학습된 확산 모델을 사용하여 ODE 솔버로부터 얻어진 값.
+
+# **Methodology**
+
+> AnimateLCM은 안정적 확산 기반 비디오 모델을 일관성 속성을 따르도록 조정하여 최소한의 단계로 고화질 비디오 생성을 목표로 함. 확산 모델을 일관성 모델로 변환하고, 분리된 일관성 학습, 교사 모델 없는 어댑터 적응에 대해 다룸
+> 
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/706f9d65-533e-4ec3-a86c-0f54e703b806/Untitled.png)
+
+## **4.1 From DMs to CMs (확산 모델에서 일관성 모델로)**
+
+### **From $\epsilon$-prediction to $x_0$-prediction ($\epsilon$-예측에서 $x_0$-예측으로)**
+
+- Stable Diffusion Model은 일반적으로 주어진 샘플에 추가된 노이즈를 예측함.
+- Consistency Model은 PF-ODE 궤적의 솔루션 $**x_0**$을 직접 예측하는 것을 목표로 함. 이를 위해 다음과 같이 모델을 파라미터화.
+
+$$
+f_{\theta}(x_t, c, t) = c_{skip}(t)x_t + c_{out}(t) (x_t - \sqrt{1-\alpha_t}\epsilon_{\theta}(x_t, c, t)) / \sqrt{\alpha_t}
+$$
+
+- $c$는 Text Condition Embedding.
+
+### **2. Classifier-free guidance augmented ODE solver (CFG 증강 ODE 솔버)**
+
+고품질 생성을 위해 분류기 없는 가이던스가 필수적입니다. 이는 다음과 같이 표현됩니다
+
+$$
+\epsilon_{\phi}(x_t, c, t, w) = (1+w) \epsilon_{\theta}(x_t, c, t) - w \epsilon_{\phi}(x_t, \empty, t)
+$$
+
+이에 따라 PF ODE 솔버는 다음과 같이 나타낼 수 있습니다.
+
+$$
+\Phi_w(x_t, c, t, t_{n+1};\phi) = (1+w)\Phi(x_t, c, t, t_{n+1}l\phi) - w\Phi(x_t, \empty, t, t_{n+1};\phi)
+$$
+
+### **3. Sample sparse timesteps from dense timesteps**
+
+훈련 효율성을 위해 전체 1000개의 타임스텝 중 50개의 타임스텝을 균등하게 샘플링합니다.
+
+## **4.2 Decoupled Consistency Learning (분리된 일관성 학습)**
+
+### **1. Decoupling image generation and motion priors (이미지 생성과 움직임 생성 분리)**
+
+- 고품질 이미지 텍스트 데이터셋에서 Stable Diffusion 모델을 Image Consistency Model로 Distillation.
+- 이후 2D 컨볼루션 커널을 3D 커널로 팽창시키고 추가적인 시간적 레이어를 추가.
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/bb393418-f00e-453c-9e6e-adc07d5c58c2/Untitled.png)
+
+### **2. Initialization strategy**
+
+- 초기화 과정에서 Online Consistency Model에만 사전 학습된 공간적 LoRA 가중치를 삽입하고, Target Consistency Model에는 삽입하지 않음.
+- 이를 통해 훈련 중 EMA를 통해 점진적으로 가중치를 목표 모델로 전달합니다.
+- 
+
+$$
+⁍
+$$
+
+- 여기서 $\lambda_n$은 시간에 따른 가중치 함수이며, 허버 손실을 거리 측정 함수로 사용
+
+## **4.3 Teacher-Free Adaptation**
+
+### **1. One-step MCMC approximation of the actual score**
+
+- 스코어를 근사하기 위해 다음과 같이 표현.
+
+$$
+⁍
+$$
+
+- 이는 실제로 두 개의 같은 노이즈를 공유하는 SDE로서의 스코어 근사를 나타냄.
+
+### **2. Image-to-video generation**
+
+- 입력 이미지를 사전 처리하여 이미지를 잠재 공간으로 인코딩하고, 시간 차원에서 반복하여 비디오 프레임 수와 맞춤.
+- 그런 다음 해당 특징을 추출하여 U-Net의 다양한 레이어에 추가.
+
+### **3. Controllable video generation**
+
+- 이미지 확산 모델에서 훈련된 레이아웃 제어 어댑터를 통합하여 제어 가능한 비디오 생성을 수행.
+- 이 과정에서 LoRA 레이어를 튜닝하여 호환성을 높임.
+- 이와 같은 방법론을 통해 AnimateLCM은 높은 효율성과 품질로 고화질 비디오 생성을 실현.
+
+# **Experiments**
+
+## **5.1 Experimental Setup (실험 설정)**
+
+### **Implementation details**
+
+- 대부분의 실험에서 Stable Diffusion v1-5를 기본 모델로 사용하며, DDIM ODE 솔버를 사용하여 훈련.
+- Latent Consistency Model을 따르며, 전체 1000 타임스텝 중 50 타임스텝을 균등하게 샘플링하여 훈련.
+- Stable Diffusion v1-5와 공개된 모션 가중치를 사용하여 교사 비디오 확산 모델로 사용.
+- 모든 실험(제어 가능한 비디오 생성 제외)은 WebVid-2M 공개 데이터셋에서 수행되었으며, 추가적인 데이터 증강이나 추가 데이터 없이 진행.
+- 제어 가능한 비디오 생성을 위해 BLIP로 캡션된 TikTok 데이터셋을 사용하여 모델을 훈련.
+
+### **Benchmarks**
+
+- 평가를 위해, 동작 인식 작업을 위해 큐레이션된 UCF-101 데이터셋을 사용.
+- 각 카테고리에 대해 GPT-4를 사용하여 매우 간결한 캡션을 생성하고, 각 카테고리마다 16 프레임의 512 × 512 해상도의 비디오 24개를 생성.
+- FVD(Frechet Video Distance)와 CLIP-SIM(CLIP Similarity)를 평가 메트릭으로 사용.
+- FVD를 위해 UCF-101 데이터셋과 생성된 비디오 각각에서 무작위로 2048개의 비디오를 선택.
+- CLIP-SIM은 CLIP ViT-H/14 LAION-2B를 사용하여 비디오의 모든 프레임과 간결한 캡션의 유사성 평균 값을 계산.
+
+## **5.2 Qualitative Results (정성적 결과)**
+
+### **Generation Results (생성 결과)**:
+
+- 텍스트에서 비디오 생성, 이미지에서 비디오 생성, 제어 가능한 비디오 생성을 포함한 4단계 생성 결과(그림 7)
+- 다른 평가 단계에서의 생성 결과는 AnimateLCM이 일관성을 잘 따르며 다양한 단계에서도 비슷한 스타일과 움직임을 유지함을 보여줌.
+- NFE(Number of Function Evaluations)가 증가할수록 생성 품질도 증가하여 25 및 50 단계에서 교사 모델과 경쟁적인 성능을 달성.
+
+## **5.3 Quantitative Experiments (정량적 실험)**
+
+### **Comparison with Baselines (기준 모델과의 비교)**:
+
+- Table 1에서 AnimateLCM과 DDIM, DPM++ 같은 강력한 기준 모델과 비교한 정량적 메트릭 결과를 보여줌.
+- AnimateLCM은 특히 Low Steps(1~4)에서 기준 모델을 크게 능가.
+- AnimateLCM은 분류기 없는 가이던스를 적용하지 않고도 모든 메트릭에서 높은 성능을 보이며, 이는 추론 피크 메모리 비용과 시간을 절약함.
+- 공용 개인화된 리얼리틱 스타일 모델의 공간 가중치를 교체하여 추가 성능 향상을 확인함.
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/997f9e5d-4d8f-4198-a197-6f57801721b8/Untitled.png)
+
+## **5.4 Discussion (논의)**
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/9fe9eb8b-14b7-4eb1-bf4b-a109153d4376/Untitled.png)
+
+### **Effectiveness of Decoupled Consistency Learning (분리된 일관성 학습의 효과)**:
+
+- 분리된 학습 전략과 특정 초기화 설계의 효과를 검증합니다. "w/o decouple"과 "w/o init" 두 가지 기준과 비교함.
+- 분리된 일관성 학습과 초기화 전략이 결합된 경우 가장 높은 성능을 보여줌.
+
+### **Effectiveness of Teacher-Free Adaptation (교사 없는 적응의 효과)**:
+
+- Fig. 6에서 교사 없는 적응 전략을 적용한 후 제어 가능한 비디오 생성 결과를 보여줍니다. 적응 후 안정된 제어와 더 나은 시각적 품질을 달성함.
+
+### **Properties of Personalized Models (개인화된 모델의 특성)**:
+
+- 개인화된 모델을 사용하여 다양한 스타일의 고품질 비디오 생성을 실현할 수 있음. 공용 개인화된 리얼리틱 비전 V5.0의 성능을 검증한 결과, FVD 및 CLIPSIM 메트릭에서 향상을 확인.
+- 개인화된 모델을 적용함으로써 시각적 품질뿐만 아니라 움직임의 부드러움과 일관성도 개선됨.
+
+# **6. Conclusion (결론)**
+
+> AnimateLCM은 비디오 생성 가속화에 있어 혁신적인 발전을 이룸. 이미지 생성 및 움직임 생성을 분리한 일관성 학습 전략을 통해 훈련 효율성과 생성 품질을 높였으며, 다양한 어댑터를 효율적으로 통합할 수 있는 전략을 제안함.
+> 
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/bb81fa66-cec1-4f03-ba99-73d6d48ae3b7/Untitled.png)

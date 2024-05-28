@@ -101,6 +101,8 @@ Large Language Models 관련 논문 정리
 
 1. [AnimateLCM: Accelerating the Animation of Personalized Diffusion Models and Adapters with Decoupled Consistency Learning(2024, 작성중)](./papers/AnimateLCM/contents.md)
 
+2. [DreamBooth : Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation(2022, 작성중)](./papers/Dreambooth/contents.md)
+
 ## Large Language Models
 
 1. [LIMA: Less Is More for Alignment(2023)](./papers/LIMA/contents.md)

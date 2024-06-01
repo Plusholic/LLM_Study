@@ -14,14 +14,14 @@
 - 그러나 이러한 모델의 생성 능력은 전례 없지만, 특정 참조 세트에서 피사체의 외관을 모방하고 동일한 피사체의 새로운 렌더링을 다양한 맥락에서 합성하는 능력은 부족함.
 - 주요 이유는 출력 도메인의 표현력이 제한되어 있다는 점. 심지어 객체에 대한 가장 상세한 텍스트 설명조차도 다양한 외관의 인스턴스를 생성할 수 있음 (그림 2)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/95a2169c-2301-4ee7-98f2-34298d3a5f3f/Untitled.png)
+![Untitled](figure2.png)
 
 - 이 연구의 목적은 몇 장의 주제 이미지를 입력으로 제공받아 사전 학습된 텍스트-이미지 모델을 미세 조정하여 특정 피사체를 고유 식별자와 연결하는 방법을 학습하는 것.
 - 모델의 출력 도메인에 주제가 내장되면, Unique Identifier를 사용하여 다양한 장면에서 사진 실감 나는 주제의 이미지를 합성할 수 있음. 이 기술은 모델의 사전 지식(Sementic Prior)을 활용하여 참조 이미지에 나타나지 않는 다양한 장면, 포즈, 관점 및 조명 조건에서 피사체를 합성할 수 있게 함.
 - 우리의 접근 방식은 피사체 재맥락화, 텍스트 안내 뷰 합성, 예술적 렌더링 등 여러 어려운 작업을 수행할 수 있으며, 주제의 주요 특징을 유지하면서 새로운 이미지를 생성할 수 있음.
     - 피사체의 이미지를 몇 장 찍으면 간단하고 직관적인 텍스트 안내에 따라 다양한 조건과 장면에서 피사체의 사진을 생성하는 '마법의 사진 부스'와 같은 효과를 얻을 수 있음(그림 1).
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/80b1c5c8-2114-4d94-9b00-3109ca373f93/Untitled.png)
+![Untitled](figure1.png)
 
 # **Related work**
 
@@ -109,7 +109,7 @@ $$
 - 두 번째 항은 모델이 자체 생성 이미지를 통해 지도하는 사전 보존 항
 - 이 손실은 출력 다양성을 장려하고 언어 드리프트를 극복하는 데 효과적
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/84fd7594-fee4-4b84-9513-951e7b10eb2e/Untitled.png)
+![Untitled](figure3.png)
 
 # **Experiments**
 
@@ -128,7 +128,7 @@ $$
     - DINO : 생성된 이미지와 실제 이미지의 ViT-S/16 DINO 임베딩 간의 평균 코사인 유사도. DINO는 자가 지도 학습 목표 덕분에 주제 또는 이미지의 고유한 특징을 구별하도록 장려됨 .
 - 프롬프트 충실도(prompt fidelity) : 프롬프트와 이미지 CLIP 임베딩 간의 평균 코사인 유사도로 측정됨. CLIP-T로 표시 .
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/c988df6b-e219-45ee-955b-2c48439f789c/Untitled.png)
+![Untitled](table2.png)
 
 ### **Comparisons**
 
@@ -144,7 +144,7 @@ $$
     - 주제 충실도와 프롬프트 충실도 모두에서 DreamBooth에 대한 압도적인 선호를 발견. 이는  DINO 차이 약 0.1과 CLIP-T 차이 0.05가 사용자 선호도 측면에서 중요함을 보여줌.
     - 정성적 비교를 보여줍니다. 우리는 DreamBooth가 주제 정체성을 더 잘 보존하고, 프롬프트에 더 충실함을 관찰함(그림 4)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/354c8edc-ccc3-44fc-a324-c8f860827a99/Untitled.png)
+![Untitled](figure4.png)
 
 ### **Ablation Studies**
 
@@ -199,8 +199,8 @@ $$
     - "a transparent [V] teapot" (그림 7).
 - **난이도**: 일부 속성 수정은 다른 것보다 어려울 수 있으며, 이는 모델의 사전 지식에 따라 달라짐.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/1da2699d-9d31-4489-8587-81895d061506/Untitled.png)
+![Untitled](figure7.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/7c07492b-3cc5-4360-b676-84d1e7c66f74/Untitled.png)
+![Untitled](figure8.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/11cc0dac-8b6d-4920-839a-e2c17d3a61fd/Untitled.png)
+![Untitled](figure9.png)

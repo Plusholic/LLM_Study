@@ -101,7 +101,13 @@ Large Language Models 관련 논문 정리
 
 1. [AnimateLCM: Accelerating the Animation of Personalized Diffusion Models and Adapters with Decoupled Consistency Learning(2024, 작성중)](./papers/AnimateLCM/contents.md)
 
-2. [DreamBooth : Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation(2022, 작성중)](./papers/Dreambooth/contents.md)
+2. [DreamBooth : Fine Tuning Text-to-Image Diffusion Models for Subject-Driven Generation(2022)](./papers/Dreambooth/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - Text-2-Image 모델은 특정 이미지의 외관을 모방하고 이를 다양한 맥락에서 새로운 형태로 합성하는 능력이 부족함</br>
+    - 소수의 참조 이미지에 대해 피사체에 대한 Unique Identifier, Class Noun, Class Discription, Context Discription 등을 추가하여 학습. Unique Identifier는 기존 임베딩과 분리해야 하기 때문에 기존 단어를 사용하면 안됨</br>
+    - Subject Recontextualization, Text-Guided View Synthesis, and Artistic Rendering 등 이전에는 불가능했던 여러 작업을 수행하며, 피사체의 주요 특징을 보존할 수 있음
+    </details>
 
 ## Large Language Models
 

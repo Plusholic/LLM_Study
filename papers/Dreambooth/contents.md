@@ -1,10 +1,17 @@
+# 3 LINE SUMMARY
+
+- Text-2-Image 모델은 특정 이미지의 외관을 모방하고 이를 다양한 맥락에서 새로운 형태로 합성하는 능력이 부족함
+- 소수의 참조 이미지에 대해 피사체에 대한 Unique Identifier, Class Noun, Class Discription, Context Discription 등을 추가하여 학습. Unique Identifier는 기존 임베딩과 분리해야 하기 때문에 기존 단어를 사용하면 안됨
+- Subject Recontextualization, Text-Guided View Synthesis, and Artistic Rendering 등 이전에는 불가능했던 여러 작업을 수행하며, 피사체의 주요 특징을 보존할 수 있음
+
 # Abstract
 
 > 대형 Text to Image 모델은 주어진 텍스트 프롬프트로부터 고품질의 다양한 이미지를 합성하는 데 있어서 AI의 진화를 획기적으로 도약시킴. 그러나 이러한 모델은 주어진 참조 세트의 피사체 외관을 모방하고 이를 다양한 맥락에서 새로운 형태로 합성하는 능력이 부족함. 이 연구에서는 텍스트-이미지 확산 모델의 "개인화"를 위한 새로운 접근 방식을 제안. 피사체의 몇 장의 이미지만 입력으로 주어지면, 사전 학습된 텍스트-이미지 모델을 미세 조정하여 특정 피사체와 고유 식별자를 결합하도록 학습.
 > 
-- 피사체가 모델의 출력 도메인에 포함되면, 고유 식별자를 사용하여 다양한 장면에서 피사체의 새로운 현실적인 이미지를 합성
+- 피사체가 모델의 출력 도메인에 포함되면, Unique Identifier를 사용하여 다양한 장면에서 피사체의 새로운 현실적인 이미지를 합성
 - 모델에 내장된 Sementic Prior(사전지식)과 새로운 자가 Autogenous Class-Specific Prior Preservation Loss를 활용하여, 참조 이미지에 나타나지 않는 다양한 장면, 포즈, 뷰 및 조명 조건에서 피사체를 합성할 수 있게 됨.
-- 우리는 이 기술을 사용하여 피사체 재맥락화, 텍스트 안내 뷰 합성, 예술적 렌더링 등 이전에는 불가능했던 여러 작업을 수행하며, 피사체의 주요 특징을 보존합니다. 또한 피사체 기반 생성의 새로운 작업을 위한 새로운 데이터셋과 평가 프로토콜을 제공함
+- 우리는 이 기술을 사용하여 subject recontextualization, text-guided view synthesis, and artistic rendering 등 이전에는 불가능했던 여러 작업을 수행하며, 피사체의 주요 특징을 보존할 수 있음.
+- 또한 피사체 기반 생성의 새로운 작업을 위한 새로운 데이터셋과 평가 프로토콜을 제공
 
 # **Introduction**
 
@@ -70,10 +77,12 @@ $$
 
 ### Designing Prompts for Few-Shot Personalization
 
-- 우리의 목표는 새로운 (고유 식별자, 피사체) 쌍을 확산 모델의 "Dictionary"에 삽입하는 것.
+- 우리의 목표는 새로운 (Unique Identifier, Subject) 쌍을 확산 모델의 "Dictionary"에 삽입하는 것.
 - 이미지를 자세히 설명하는 오버헤드를 피하기 위해, 우리는 모든 입력 이미지를 "a [identifier] [class noun]"로 라벨링하는 간단한 접근 방식을 사용.
-- 여기서 [identifier]는 주제와 연결된 고유 식별자이고, [class noun]은 피사체의 클래스 기술자입니다(예: 고양이, 개, 시계 등)
-- 클래스 기술자는 사용자 제공이거나 분류기를 사용해 얻을 수 있습니다. 잘못된 클래스 기술자를 사용하거나 클래스 기술자를 사용하지 않으면 훈련 시간이 길어지고 성능이 저하됩니다.
+    - [identifier] : 피사체와 연결된 Unique Identifier
+    - [class noun] : 피사체의 Class Discriptor(예: 고양이, 개, 시계 등)
+- 클래스 기술자는 사용자가 라벨링 하거나 분류모델 등을 사용해 얻을 수 있음.
+- 잘못된 Class Discriptor를 사용하거나, Class Discriptor를 사용하지 않으면 훈련 시간이 길어지고 성능이 저하됨.
 
 ### Rare-token Identifiers
 
@@ -172,7 +181,7 @@ $$
 
 **Art Renditions**
 
-- **프롬프트 형식**:
+- **프롬프트 형식**
     - “a painting of a [V] [class noun] in the style of [famous painter]”
     - “a statue of a [V] [class noun] in the style of [famous sculptor]”
 - **주제의 예술적 재현**: 주제를 유명 화가나 조각가의 스타일로 재현 가능.
@@ -182,17 +191,17 @@ $$
 **Novel View Synthesis**
 
 - **새로운 시점**: 주제를 다양한 새로운 시점에서 렌더링 가능.
-- **예시**:
-    - 그림 8에서는 고양이를 새로운 시점(뒤쪽, 아래쪽, 위쪽)에서 생성.
+- **예시**
+    - 고양이를 새로운 시점(뒤쪽, 아래쪽, 위쪽)에서 생성(그림 8)
     - 복잡한 털 무늬를 일관되게 유지.
-- **모델의 학습 능력**:
+- **모델의 학습 능력**
     - 모델은 특정 고양이를 다양한 시점에서 본 적이 없지만, 클래스 사전 지식을 통해 새로운 시점을 추론하여 생성.
     - 단 4개의 정면 이미지만으로 새로운 시점을 생성.
 
 **Property Modification**
 
 - **속성 수정 가능**: 주제의 다양한 속성을 수정할 수 있음.
-- **교배 예시**: 특정 개와 다른 동물 종의 교배 (그림 8 하단 행).
+- **합성 예시**: 특정 개와 다른 동물 종의 합성 (그림 8 하단 행).
     - 프롬프트: “a cross of a [V] dog and a [target species]”.
     - 개의 독특한 얼굴 특징이 잘 보존되고 대상 종과 융합됨.
 - **소재 변경 예시**:
@@ -204,3 +213,7 @@ $$
 ![Untitled](figure8.png)
 
 ![Untitled](figure9.png)
+
+![Untitled](figure18.png)
+
+- a [V] cartoon grabbing a fork and a knife saying “time to eat””

@@ -109,6 +109,8 @@ Large Language Models 관련 논문 정리
     - Subject Recontextualization, Text-Guided View Synthesis, and Artistic Rendering 등 이전에는 불가능했던 여러 작업을 수행하며, 피사체의 주요 특징을 보존할 수 있음
     </details>
 
+3. [Adding Conditional Control to Text-to-Image Diffusion Models(2023), 작성중](./papers/ControlNet/contents.md)
+
 ## Large Language Models
 
 1. [LIMA: Less Is More for Alignment(2023)](./papers/LIMA/contents.md)

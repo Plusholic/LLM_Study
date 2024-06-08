@@ -112,7 +112,7 @@ $$
 
 - ControlNet의 주요 아이디어는 원래 모델을 고정된 상태로 유지하면서 조건 제어 기능을 추가하는 것. 이 접근 방식은 대규모 사전 훈련된 모델의 강력한 기능을 활용하면서도 새로운 조건에 맞게 모델을 미세 조정할 수 있게 해줌. 이를 통해 다양한 조건 입력을 효과적으로 처리하고, 모델의 전반적인 성능을 향상시킬 수 있음.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/16a2e13a-9a6d-4189-b385-acd680111454/Untitled.png)
+![Untitled](figure2.png)
 
 ## **ControlNet for Text-to-Image Diffusion**
 
@@ -130,7 +130,7 @@ $$
 
 - 이 조건 벡터 $c_f$는 ControlNet으로 전달됨.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/76391581-1c03-4dd7-b835-87aeadab73f6/Untitled.png)
+![Untitled](figure3.png)
 
 ## **Training**
 
@@ -147,7 +147,7 @@ $$
 - 제로 합성곱 계층을 사용하여 훈련 초기 단계에서 모델에 해로운 노이즈가 추가되지 않도록 함. 이를 통해 모델은 훈련 내내 고품질 이미지를 예측할 수 있음.
 - 모델은 조건 이미지를 따르는 방법을 점진적으로 학습하지 않고, 특정 훈련 단계에서 갑작스럽게 성공합니다. 이 현상을 "갑작스러운 수렴 현상"이라고 합니다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/63719c45-7121-4b8c-936a-be6e06269c7d/Untitled.png)
+![Untitled](figure4.png)
 
 ## **Inference**
 
@@ -181,7 +181,7 @@ ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
 - ControlNet은 Canny Edge, Depth Map, Normal Map, HED Soft Edge, Segmentation Map, Human Pose, User Sketches 등을 조건으로 사용하여 이미지를 생성함.
 - ControlNet은 입력 조건 이미지의 내용을 잘 해석하여 다양한 조건에서 고품질 이미지를 생성할 수 있음
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/bd173328-248f-4c2f-943c-a4cbbb7cced3/Untitled.png)
+![Untitled](figure7.png)
 
 ## **Ablative Study**
 
@@ -198,7 +198,7 @@ ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
 - 이는 Trainable Copy의 사전 훈련된 백본이 훈련 중 손상되었음을 시사.
 - 이를 통해 ControlNet의 구조적 구성 요소가 모델의 성능에 미치는 영향을 확인하고, 최적의 구조를 찾는 데 도움을 줍니다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/8d144b67-b6a4-4eca-890a-da09ade064f0/Untitled.png)
+![Untitled](figure8.png)
 
 ## **Quantitative Evaluation**
 
@@ -233,7 +233,7 @@ ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
 - ControlNet은 여러 조건을 조합하여 복잡한 이미지 구성을 생성할 수 있음.
 - 다양한 조건 입력에 대해 안정적으로 작동하며, 사용자 선호도 평가에서 높은 점수를 받았음.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/2e26fef1-c600-4e69-84f6-9dcec0a53ae7/Untitled.png)
+![Untitled](figure9.png)
 
 ## **Discussion**
 
@@ -249,7 +249,7 @@ ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
     - Comic Diffusion이나 Protogen 3.4 등 Srable Diffusion Model 커뮤니티에서도 추가적인 훈련 없이 바로 적용할 수 있음.
     - Comic Diffusion과 Protogen 3.4 모델에서도 ControlNets가 적용된 결과를 확인할 수 있음.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/36213ce7-a824-43af-99e5-835885ac22f2/Untitled.png)
+![Untitled](figure10.png)
 
 ## **Conclusion**
 

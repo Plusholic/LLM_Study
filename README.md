@@ -110,6 +110,13 @@ Large Language Models 관련 논문 정리
     </details>
 
 3. [Adding Conditional Control to Text-to-Image Diffusion Models(2023), 작성중](./papers/ControlNet/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - 이미지의 공간적인 특징 표현에 한계가 있어서 원하는 이미지를 생성하기 위해서는 프롬프트를 여러 번 수정하고 결과를 확인하며 재수정 하는 과정이 필요함.</br>
+    - 훈련 중 유해한 노이즈가 모델에 영향을 미치지 않도록 초기 가중치가 0인 2개의 Zero Convolution Layer를 사용하여 계산된 Feature map을 원래 모델의 아웃풋 Feature map에 더해주는 방식으로 백본 모델을 보호함.</br>
+    - Canny Edge, Depth, Segmentation, Human Pose 등 다양한 조건에서 ControlNet은 Stable Diffusion 모델에서 고품질 이미지를 생성할 수 있으며, 사용자 평가, 산업 모델과의 비교 등에서 좋은 평가
+    </details>
+
 
 ## Large Language Models
 

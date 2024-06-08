@@ -1,5 +1,9 @@
 # 3 LINE SUMMARY
 
+- 이미지의 공간적인 특징 표현에 한계가 있어서 원하는 이미지를 생성하기 위해서는 프롬프트를 여러 번 수정하고 결과를 확인하며 재수정 하는 과정이 필요함.
+- 훈련 중 유해한 노이즈가 모델에 영향을 미치지 않도록 초기 가중치가 0인 2개의 Zero Convolution Layer를 사용하여 계산된 Feature map을 원래 모델의 아웃풋 Feature map에 더해주는 방식으로 백본 모델을 보호함.
+- Canny Edge, Depth, Segmentation, Human Pose 등 다양한 조건에서 ControlNet은 Stable Diffusion 모델에서 고품질 이미지를 생성할 수 있으며, 사용자 평가, 산업 모델과의 비교 등에서 좋은 평가
+
 # Abstract
 
 > 대형 Text-to-Image Diffusion Model에 Spatial Conditioning Contol을 추가하는 신경망 구조인 ControlNet을 제안. ControlNet은 사전 훈련된 Large Diffusion Model의 파라미터를 고정하고, 그 깊고 강력한 인코딩 계층을 재사용하여 다양한 조건 제어를 학습함. ControlNet의 신경망 구조는 초기 파라미터를 0으로 설정한 합성곱 계층을 사용하여, `훈련 중 유해한 노이즈가 모델에 영향을 미치지 않도록 설계`되었음.
@@ -71,10 +75,11 @@
 
 # **Method**
 
-- ControlNet은 대형 사전 훈련된 텍스트-이미지 확산 모델에 공간적으로 국한된, 작업별 이미지 조건을 추가할 수 있는 신경망 구조입니다. 이 섹션에서는 ControlNet의 기본 구조를 소개하고, 이를 Stable Diffusion 모델에 적용하는 방법을 설명합니다. 또한, 훈련 과정과 여러 ControlNets를 구성하는 등의 추가 고려 사항을 다룹니다.
-- ControlNet은 신경망의 블록에 추가 조건을 삽입합니다. 여기서 네트워크 블록은 일반적으로 단일 유닛을 형성하기 위해 함께 배치되는 신경층 집합을 의미합니다. ControlNet을 사전 훈련된 블록에 추가할 때, 원래 블록의 파라미터를 고정(freeze)하고, 학습 가능한 복사본을 동시에 생성합니다. 이 학습 가능한 복사본은 외부 조건 벡터를 입력으로 받습니다.
-- ControlNet은 대형 모델의 잠긴 파라미터를 보존하면서, 학습 가능한 복사본이 다양한 입력 조건을 처리할 수 있는 강력한 백본(backbone) 역할을 합니다. 이러한 구조는 훈련 초기 단계에서 해로운 노이즈가 모델에 영향을 미치지 않도록 보호합니다.
-- 이 섹션에서는 Stable Diffusion 모델에 ControlNet을 추가하는 방법, 훈련 과정, 그리고 추가 조건들이 확산 과정에 어떻게 영향을 미치는지에 대해 설명합니다.
+> ControlNet은 대형 사전 훈련된 Text-to-Image Diffusion Model에 `공간적으로 국한된, 작업별 이미지 조건을 추가할 수 있는 신경망 구조`. 이 섹션에서는 ControlNet의 기본 구조를 소개하고, 이를 Stable Diffusion 모델에 적용하는 방법을 설명합니다. 또한, 훈련 과정과 여러 ControlNets를 구성하는 등의 추가 고려 사항을 다룸.
+> 
+- ControlNet은 신경망의 블록에 추가 조건을 삽입. 여기서 네트워크 블록은 일반적으로 단일 유닛을 형성하기 위해 함께 배치되는 신경층 집합을 의미.
+- ControlNet을 사전 훈련된 블록에 추가할 때, 원래 블록의 파라미터를 고정(freeze)하고, 학습 가능한 복사본을 동시에 생성. 이 학습 가능한 복사본은 외부 조건 벡터를 입력으로 받음.
+- ControlNet은 대형 모델의 잠긴 파라미터를 보존하면서, 학습 가능한 복사본이 다양한 입력 조건을 처리할 수 있는 강력한 백본(backbone) 역할. 이러한 구조는 훈련 초기 단계에서 해로운 노이즈가 모델에 영향을 미치지 않도록 보호.
 
 ## **ControlNet**
 
@@ -86,8 +91,7 @@ y=\mathcal{F}(x;\Theta)
 $$
 
 - $x, y$는 2D Feature Map, $\mathbb{R}^{h \times x \times c}$ 이며, $h, x, c$는 Height, Width, Number of Channels in the map
-- ControlNet을 사전 훈련된 블록에 추가할 때, 원래 블록의 파라미터 $\Theta$를 고정하고, $\Theta_c$를 사용하는 Trainable Copy 신경망 블록을 동시에 생성함. Trainable Copy는 외부 조건 벡터 $c$ 를 입력으로 받음.
-- 
+- ControlNet을 사전 훈련된 블록에 추가할 때, `원래 블록의 파라미터 $\Theta$를 고정하고, $\Theta_c$를 사용하는 Trainable Copy 신경망 블록을 동시에 생성함.` Trainable Copy는 외부 조건 벡터 $c$ 를 입력으로 받음.
 - ControlNet은 대형 모델의 잠긴 파라미터를 보존하면서, Trainable Copy가 다양한 입력 조건을 처리할 수 있는 강력한 백본 역할. Trainable Copy는 1 x 1 Zero Convolution Layer $\mathcal{Z}(\cdot;\cdot)$에 연결됨
 - Zero Convolution은 1 x 1 컨볼루션 레이어로 초기 가중치와 편향을 0으로 설정하여 훈련 초기 단계에서 해로운 노이즈가 모델에 영향을 미치지 않도록 함.
 - ControlNet을 빌드하기 위해서 2 개의 Zero Convolution 파라미터 $\Theta_{z1}, \Theta_{z2}$를 사용함. 완성된 ControlNet의 수식은 다음과 같음
@@ -101,22 +105,22 @@ $$
 - $\mathcal{Z}(c; Θ_{z1})$
     - 조건 $c$ 에 대해 첫 번째 Zero Convolution 레이어를 통해 연산.
 - $\mathcal{F}(x + \mathcal{Z}(c; Θ_{z1}); Θ_c)$
-    - 첫 번째 Zero Convolution의 output을 특성 맵 $x$에 더한 후, 훈련 가능한 복사본에서 연산.
+    - 첫 번째 Zero Convolution의 output을 feature map $x$에 더한 후, Trainable Copy에서 연산.
 - $\mathcal{Z}(\mathcal{F}(x + \mathcal{Z}(c; Θ_{z1}); Θ_c); Θ_{z2})$
     - 두 번째 Zero Convolution 레이어를 통해 최종 연산.
 
 - $y_c$는 ControlNet block의 아웃풋이고, 첫 번째 Training Step에서 Zero Convolution Layer의 Weight와 Bias Parameter는 0으로 초기화 되기 때문에 위의 수식 역시 0이 되고, $y_c = y$ 가 됨.
-- 이러한 방식으로 유해한 노이즈는 훈련이 시작될 때 훈련 가능한 복사본의 신경망 레이어의 숨겨진 상태에 영향을 미칠 수 없음.
+- 이러한 방식으로 `유해한 노이즈는 훈련이 시작될 때 훈련 가능한 복사본의 신경망 레이어의 숨겨진 상태에 영향을 미칠 수 없음.`
 - 또한 $\mathcal{Z}(c;\Theta_{z1})=0$이고 Trainable Copy도 입력 이미지 $x$를 수신하므로 Trainable Copy는 완전한 기능을 갖추고 사전 훈련된 대규모 모델의 기능을 유지하여 추가 학습을 위한 강력한 백본 역할을 할 수 있음.
-- 제로 컨볼루션은 초기 훈련 단계에서 무작위 노이즈를 그라데이션으로 제거하여 이 백본을 보호함.
+- Zero Convolution은 초기 훈련 단계에서 노이즈가 영향을 미치지 않도록 하기 위해 사용됨.
 
-- ControlNet의 주요 아이디어는 원래 모델을 고정된 상태로 유지하면서 조건 제어 기능을 추가하는 것. 이 접근 방식은 대규모 사전 훈련된 모델의 강력한 기능을 활용하면서도 새로운 조건에 맞게 모델을 미세 조정할 수 있게 해줌. 이를 통해 다양한 조건 입력을 효과적으로 처리하고, 모델의 전반적인 성능을 향상시킬 수 있음.
+- ControlNet의 주요 아이디어는 원래 모델을 고정된 상태로 유지하면서 조건 제어 기능을 추가하는 것. `이 접근 방식은 대규모 사전 훈련된 모델의 강력한 기능을 활용하면서도 새로운 조건에 맞게 모델을 미세 조정할 수 있게 해줌`. 이를 통해 다양한 조건 입력을 효과적으로 처리하고, 모델의 전반적인 성능을 향상시킬 수 있음.
 
 ![Untitled](figure2.png)
 
 ## **ControlNet for Text-to-Image Diffusion**
 
-- Stable Diffusion 모델을 예시로 ControlNet이 대형 사전 훈련된 확산 모델에 조건 제어를 추가하는 방법을 설명합니다. Stable Diffusion은 인코더, 중간 블록, 스킵 연결 디코더로 구성된 U-Net 구조를 따름.
+- Stable Diffusion 모델을 예시로 ControlNet이 대형 사전 훈련된 확산 모델에 조건 제어를 추가하는 방법을 설명. Stable Diffusion은 인코더, 중간 블록, 스킵 연결 디코더로 구성된 U-Net 구조를 따름.
 - ControlNet은 Stable Diffusion의 각 인코더 단계에 적용되며, 이를 통해 모델이 다양한 조건 입력을 처리할 수 있음.
 - ControlNet 구조는 인코더의 12개 블록과 1개의 중간 블록에 학습 가능한 복사본을 생성하고, 원래 잠긴 블록과 1x1 합성곱 계층으로 연결함.
 - 이 학습 가능한 복사본은 조건 벡터를 입력으로 받아, 모델의 원래 기능을 유지하면서도 추가적인 조건 제어 기능을 학습할 수 있게 함.
@@ -135,24 +139,24 @@ $$
 ## **Training**
 
 1. **노이즈 추가**
-    1. 이미지 확산 알고리즘은 입력 이미지 $z_0$에 점진적으로 노이즈를 추가하여 $z_t$라는 노이즈 이미지로 변환합니다. 여기서 $t$는 노이즈가 추가된 횟수를 나타냄.
+    1. 이미지 확산 알고리즘은 `입력 이미지 $z_0$에 점진적으로 노이즈를 추가하여 $z_t$라는 노이즈 이미지로 변환`.여기서 `$t$는 노이즈가 추가된 횟수`를 나타냄.
 2. **학습 목표**
-    1. 이미지 확산 알고리즘은 시간 단계 $t$, 텍스트 프롬프트 $c_t$, 특정 조건 $c_f$를 포함한 조건 세트를 사용하여 네트워크 $\epsilon_\theta$를 학습함. 이 네트워크는 노이즈 이미지를 예측하여 노이즈를 제거함.
+    1. 이미지 확산 알고리즘은 `시간 단계 $t$, 텍스트 프롬프트 $c_t$, 특정 조건 $c_f$를 포함한 조건 세트를 사용하여 네트워크 $\epsilon_\theta$를 학습`함. 이 네트워크는 노이즈 이미지를 예측하여 노이즈를 제거함.
 
 $$
-\mathcal{L}=\mathbb{E}_{z_0,t,ct,cf,ϵ∼\mathcal{N}(0,1)}[∥ϵ−ϵθ(zt,t,ct,cf)∥^2_2]
+\mathcal{L}=\mathbb{E}_{z_0,t,ct,cf,ϵ∼\mathcal{N}(0,1)}[∥ϵ−ϵθ(z_t,t,c_t,c_f)∥^2_2]
 $$
 
-- 훈련 과정에서 텍스트 프롬프트 $c_t$의 50%를 빈 문자열로 대체함. 이를 통해 모델이 텍스트 프롬프트 없이도 입력 조건 이미지를 직접 인식할 수 있게 함.
-- 제로 합성곱 계층을 사용하여 훈련 초기 단계에서 모델에 해로운 노이즈가 추가되지 않도록 함. 이를 통해 모델은 훈련 내내 고품질 이미지를 예측할 수 있음.
-- 모델은 조건 이미지를 따르는 방법을 점진적으로 학습하지 않고, 특정 훈련 단계에서 갑작스럽게 성공합니다. 이 현상을 "갑작스러운 수렴 현상"이라고 합니다.
+- 훈련 과정에서 `텍스트 프롬프트 $c_t$의 50%를 빈 문자열로 대체`함. 이를 통해 모델이 텍스트 프롬프트 없이도 입력 조건 이미지를 직접 인식할 수 있게 함.
+- `제로 합성곱 계층을 사용하여 훈련 초기 단계에서 모델에 해로운 노이즈가 추가되지 않도록 함`. 이를 통해 모델은 훈련 내내 고품질 이미지를 예측할 수 있음.
+- 모델은 조건 이미지를 따르는 방법을 `점진적으로 학습하지 않고, 특정 훈련 단계에서 갑작스럽게 성공`합니다. 이 현상을 "갑작스러운 수렴 현상"이라고 합니다.
 
 ![Untitled](figure4.png)
 
 ## **Inference**
 
-ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
-
+> ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
+> 
 1. **Classifier-Free Guidance (CFG) Resolution Weighting**:
     - Stable Diffusion 모델은 고품질 이미지를 생성하기 위해 Classifier-Free Guidance (CFG)를 사용. CFG는 모델의 최종 출력, 무조건적 출력, 조건적 출력, 사용자 지정 가중치로 구성됨.
     
@@ -164,12 +168,13 @@ ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
     - $\epsilon_{\text{uc}}$ : 무조건적인(unconditional) 출력 (텍스트 조건이 없는 상황)
     - $\epsilon_{\text{c}}$ : 조건부(conditional) 출력 (텍스트 조건이 있는 상황)
     - $\beta_{\text{cfg}}$ : 사용자 지정 가중치 (정도 조정을 위한 파라미터)
-    - ControlNet의 조건 이미지를 CFG의 무조건적 출력과 조건적 출력 모두에 추가하거나, 조건적 출력에만 추가할 수 있음. 조건 이미지를 두 출력 모두에 추가하면 CFG 가이던스가 제거되며, 조건적 출력에만 추가하면 가이던스가 매우 강해짐.
+    - ControlNet의 조건 이미지를 CFG의 무조건적 출력과 조건적 출력 모두에 추가하거나, 조건적 출력에만 추가할 수 있음.
+    - `조건 이미지를 두 출력 모두에 추가하면 CFG 가이던스가 제거되며, 조건적 출력에만 추가하면 가이던스가 매우 강해짐.`
     - 조건 이미지를 먼저 조건적 출력에 추가한 후, ControlNet과 Stable Diffusion 간의 각 연결에 해상도에 따른 가중치를 곱해서 CFG 가이던스의 강도를 줄일 수 있습니다.
 2. **ControlNets**:
-    - 여러 조건 이미지를 단일 Stable Diffusion 인스턴스에 적용하기 위해, 해당 조건 이미지의 ControlNet 출력을 Stable Diffusion 모델에 직접 추가할 수 있습니다.
-    - 경우 1: 조건부 이미지가 $\epsilon_{\text{uc}}$와 $\epsilon_{\text{c}}$에 모두 추가되면 CFG 지침이 완전히 사라짐.
-    - 경우 2: 조건부 이미지가 오직 $\epsilon_{\text{c}}$에만 추가되면 지침이 너무 강해짐.
+    - 여러 조건 이미지를 단일 Stable Diffusion 인스턴스에 적용하기 위해, 해당 조건 이미지의 ControlNet 출력을 Stable Diffusion 모델에 직접 추가할 수 있음.
+    - 경우 1: `조건부 이미지가 $\epsilon_{\text{uc}}$와 $\epsilon_{\text{c}}$에 모두 추가되면 CFG 지침이 완전히 사라짐.`
+    - 경우 2: `조건부 이미지가 오직 $\epsilon_{\text{c}}$에만 추가되면 지침이 너무 강해짐.`
     - 조건부 이미지를 먼저 $\epsilon_{\text{c}}$에 추가하고 각 블록의 해상도에 따라 가중치 $w_i$ 를 부여:
         - $w_i = 64 / h_i$
         - 예시: $h_1 = 8, h_2 = 16, ... ,h_{13} = 64$
@@ -242,7 +247,7 @@ ControlNet의 추론 과정은 다음과 같은 방식으로 진행됨
     - **50k 이미지를 사용한 훈련**: 데이터셋 크기를 증가시키면 성능이 향상됩니다. 50k 이미지를 사용하면 더 상세하고 정확한 결과를 얻을 수 있음.
     - **3m 이미지를 사용한 훈련**: 3백만 장의 이미지를 이용한 훈련에서는 더 많은 데이터가 주어졌을 때 ControlNet의 학습 능력이 확장됨을 확인할 수 있음.
 - **Capability to interpret contents**
-    - 사용자가 객체 내용을 명시하지 않고 애매한 프롬프트를 입력하면, ControlNet은 입력된 형상(shape)을 해석하여 이미지를 생성하려고 시도함.
+    - 사용자가 객체 내용을 명시하지 않고 `애매한 프롬프트를 입력하면, ControlNet은 입력된 형상(shape)을 해석하여 이미지를 생성하려고 시도함.`
     - 예를 들어, "a high-quality and extremely detailed image"라는 프롬프트로 다양한 내용을 해석한 이미지를 생성함.
 - **Transferring to community models**
     - ControlNets는 사전훈련된 Stable Diffusion(SD) 모델의 네트워크 토폴로지를 변경하지 않음.

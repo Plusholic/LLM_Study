@@ -109,7 +109,7 @@ Large Language Models 관련 논문 정리
     - Subject Recontextualization, Text-Guided View Synthesis, and Artistic Rendering 등 이전에는 불가능했던 여러 작업을 수행하며, 피사체의 주요 특징을 보존할 수 있음
     </details>
 
-3. [Adding Conditional Control to Text-to-Image Diffusion Models(2023), 작성중](./papers/ControlNet/contents.md)
+3. [Adding Conditional Control to Text-to-Image Diffusion Models(2023)](./papers/ControlNet/contents.md)
     <details>
     <summary>3 LINE SUMMARY</summary>
     - 이미지의 공간적인 특징 표현에 한계가 있어서 원하는 이미지를 생성하기 위해서는 프롬프트를 여러 번 수정하고 결과를 확인하며 재수정 하는 과정이 필요함.</br>

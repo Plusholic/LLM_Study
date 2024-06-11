@@ -70,15 +70,64 @@
         - 디코더 내에 벡터 양자화 (Vector Quantization) 층을 사용하여 잠재 공간을 정규화.
         - 양자화 층을 디코더에 통합한 VQGAN([23])으로 해석 가능.
 - 학습된 Latent Space가 2차원 구조로 되어 있어, 상대적으로 부드러운 압축률 (mild compression rates)을 사용해도 좋은 Reconstruction 성능을 얻을 수 있음.
-1. 이전 연구에서 사용된 임의의 1D 순서화(ordered) 대신, 이 모델에서는 잠재 공간의 원래 구조를 유지하며 이미지의 세부 사항을 더 잘 보존.
-
-`여기까지`
 
 ## **Latent Diffusion Models (LDMs)**:
 
-- 고차원 이미지 공간을 피하고 낮은 차원의 잠재 공간에서 확산 모델을 훈련합니다. 이를 통해 샘플링 효율성을 크게 높이고 계산 비용을 줄일 수 있음.
-- 잠재 공간의 유도 바이어스(inductive bias)를 활용하여 공간 구조를 가진 데이터에 효과적으로 적용할 수 있습니다.
+- 고차원 이미지 공간을 피하고 낮은 차원의 잠재 공간에서 확산 모델을 훈련. 이를 통해 샘플링 효율성을 크게 높이고 계산 비용을 줄일 수 있음.
+- 잠재 공간의 유도 바이어스(inductive bias)를 활용하여 공간 구조를 가진 데이터에 효과적으로 적용할 수 있음.
 - 제안된 LDMs는 일반적인 압축 모델로서 다양한 생성 모델을 훈련하는 데 사용될 수 있으며, 단일 이미지 CLIP 기반 합성 등의 다른 다운스트림 응용에도 활용될 수 있습니다.
+
+**Diffusion Models:**
+
+- 점진적으로 노이즈를 제거하여 데이터 분포 $p(x)$를 학습하도록 설계된 확률론적 모델
+- 고정된 길이 $T$의 Markov Chain의 역과정을 학습하는 것에 해당
+- 노이즈가 추가된 변수에서 점진적으로 노이즈를 제거하여 원래의 데이터 분포를 학습
+    - Reweighted Variational Lower Bound 사용
+    - 이는 노이즈 제거 스코어 매칭(denoising score-matching)과 유사함
+- 이 모델은 Denoising autoencoder로 해석될 수 있음
+- 각 오토인코더는 입력값 $x_t$의 노이즈 제거된 변형을 예측하도록 훈련됨
+- 목표 함수 ( LDM ):
+    
+    $$
+    L_{DM} = \mathbb{E}_{{x, \epsilon \sim \mathcal{N}(0, 1), t}} \left[ | \epsilon - \epsilon\theta(x_t, t) |_2^2 \right]
+    $$
+    
+- $t$는 $1, \ldots, T$ 범위에서 균일하게 샘플링됨
+- $x$ : 원본 데이터
+- $\epsilon \sim \mathcal{N}(0, 1)$ : 평균이 0이고 분산이 1인 정규 분포에서 샘플링된 노이즈
+- $x_t$: 입력 ( x )에 노이즈가 추가된 버전
+- $\epsilon_\theta(x_t, t)$: 노이즈가 추가된 입력 ( x_t )와 시간 단계 ( t )가 주어졌을 때 노이즈를 제거한 예측값
+- $\mathbb{E}$: 기대값(Expectation)
+
+**Generative Modeling of Latent Representations**
+
+- $\mathcal{E}, \mathcal{D}$로 구성된 Perceptual Compression Model을 통해 디테일이 추상화된 Low-Dimensional Latent Space에 접근할 수 있게 됨
+    - 고차원 픽셀 공간에 비해 데이터의 중요하고 의미 있는 비트에 집중할 수 있음
+    - 계산적으로 훨씬 더 효율적인 저차원 공간에서 훈련할 수 있기 때문에 가능성 기반 생성 모델에 더 적합.
+- 기존의 연구들은 고도로 압축된 이산적 잠재 공간에서 autoregressive, attention 기반 transformer 모델들을 사용한 반면, 본 논문의 모델은 이미지 별 Inductivd Bias를 활용할 수 있음
+- 여기에는 주로 2D 컨볼루션 레이어에서 기본 UNet을 구축하는 기능과 가중치 바운드를 사용하여 지각적으로 가장 관련성이 높은 비트에 목표를 더욱 집중하는 기능이 포함됨.
+    - 이미지에 특화된 귀납적 편향을 활용하여 성능을 높임.
+    - 2D 합성곱 계층(convolutional layers)을 주로 사용하여 UNet을 구축.
+    - Reweighted bound 를 사용하여 중요하고 의미 있는 정보에 초점을 맞춤.
+
+$$
+L_{\text{LDM}} := \mathbb{E}_{{\mathcal{E}(x), \varepsilon \sim \mathcal{N}(0, 1), t}} [| \varepsilon - \varepsilon\theta (z_t, t) |^2_2]
+$$
+
+- $\mathbb{E}$ : 기대 값 (기대치).
+- $\mathcal{E}(x)$ : 입력 이미지 $x$의 잠재 표현.
+- $\varepsilon \sim \mathcal{N}(0, 1)$ : 정규 분포를 따르는 잡음.
+- $t$ : 시간 단계.
+- $| \cdot |^2_2$ : L2 노름 (유클리드 거리를 제곱).
+- Neural Backbone $\theta(\cdot, t)$는 시간 조건부 인 UNet 구조로 구현됨
+- Forward Process가 고정되어 있기 때문에 E에서 $z_t$를 효율적으로 얻을 수 있음
+- $p(z)$의 샘플은 $\mathcal{D}$를 한 번 통과하여 이미지 공간으로 디코딩 할 수 있음
+
+- 기존과 달리 autoregressive 모델 대신 잠재 공간을 활용하여 더 나은 성능 제공.
+- 이미지에 특화된 구조적 편향을 활용함으로써 합성의 질을 높임.
+- 효율적인 잠재 표현을 통해 훈련 시 높은 계산 효율성을 제공.
+
+`여기까지`
 
 ## **Conditioning Mechanisms**:
 
@@ -87,7 +136,7 @@
 
 이 접근 방식을 통해 기존의 픽셀 기반 확산 모델보다 효율적이고 성능이 뛰어난 모델을 개발할 수 있음을 강조합니다.
 
-다음은 업로드된 문서의 "Experiments" 섹션 요약입니다:
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/182009c0-dc8a-4c72-8583-e0ae25583379/Untitled.png)
 
 ### 4. Experiments
 

@@ -117,6 +117,14 @@ Large Language Models 관련 논문 정리
     - Canny Edge, Depth, Segmentation, Human Pose 등 다양한 조건에서 ControlNet은 Stable Diffusion 모델에서 고품질 이미지를 생성할 수 있으며, 사용자 평가, 산업 모델과의 비교 등에서 좋은 평가
     </details>
 
+4. [High-Resolution Image Synthesis with Latent Diffusion Models(2022)](./papers/StableDiffusion/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - 기존의 이미지 생성을 위한 Diffusion Model은 주로 Pixel Space에서 동작하여 많은 계산과정이 필요하였음. 이를 해결하기 위해 Latent Space에서 Diffusion Model을 적용하는 방법을 제안함</br>
+    - 이미지를 오토인코더를 통해서 잠재 공간으로 다운샘플링 하고, 여기에 점진적으로 노이즈를 추가한 후 U Net을 통해 제거하는 과정을 저친 후 다시 원본 이미지로 디코딩하여 재구성하는 방식<br>
+    - 인패인팅, 이미지 생성, 이미지 합성, 업스케일링 등에서 GAN 등의 기존 모델과 비교했을 때 최첨단 성능을 달성하면서 계산량은 줄어듬
+    </details>
+
 
 ## Large Language Models
 

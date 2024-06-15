@@ -1,3 +1,5 @@
+[원문링크](https://arxiv.org/abs/2404.16873)
+
 # 3 LINE SUMMARY
 
 - 자동으로 Adversarial Prompt를 생성하는 방법인 언어모델 AdvPrompter 개발

@@ -1,3 +1,5 @@
+Scaling Instruction-Finetuned Language Models
+
 ### Abstract
 
 > 이 논문에서는 Instruction으로 구성된 데이터셋을 사용하여 언어 모델을 미세 조정(instruction finetuning)하는 방법을 탐구. 특히, (1) 작업 수의 확장, (2) 모델 크기의 확장, (3) 연쇄적 사고(chain-of-thought) 데이터를 사용한 미세 조정을 중점적으로 다룸. 연구 결과, 이러한 방식으로 미세 조정된 모델은 다양한 모델 클래스(PaLM, T5, U-PaLM), 프롬프트 설정(Zero-Shot, Few-Shot, CoT), 평가 벤치마크(MMLU, BBH, TyDiQA, MGSM, open-ended generation, RealToxicityPrompts)에서 성능이 크게 향상되었음.
@@ -25,6 +27,8 @@
 > 
 
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/9a0129ed-cc66-482a-99e7-b25f53b39bab/Untitled.png)
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/74332e9d-be77-4ff1-898b-865ad7df236f/Untitled.png)
 
 ## 2.1 Finetuning Data
 
@@ -55,62 +59,108 @@
 - 미세 조정 단계의 최적 스텝은 주기적인 평가를 통해 선택되며, 미세 조정에 사용된 컴퓨팅 자원은 사전 훈련에 비해 매우 적음(540B의 사전 훈련 계산량의 0.2%)
 - 이를 통해 Flan 모델은 다양한 평가 벤치마크에서 성능을 크게 향상시켰으며, 특히 추론 능력이 필요한 작업에서 두드러진 성과를 보였음.
 
-<여기까지>
+## 2.3 Evaluation Protocol
 
-### 2.3 Evaluation Protocol 요약
+> 미세 조정 데이터에 포함되지 않은 Held-Out task(모델 훈련 시 사용하지 않은 데이터셋이나 태스크)에 대한 성능을 평가. 주된 목표는 Flan-PaLM의 세계 지식과 추론 작업에 대한 전반적인 능력을 평가하는 것. 따라서 다양한 벤치마크(다국어 포함)에서 모델을 평가.
+> 
 
-**평가 벤치마크**: 이 연구는 미세 조정 데이터에 포함되지 않은 보류 작업에 대한 성능을 평가합니다. 주된 목표는 Flan-PaLM의 세계 지식과 추론 작업에 대한 전반적인 능력을 평가하는 것입니다. 따라서 다양한 벤치마크(다국어 포함)에서 모델을 평가합니다. 사용된 주요 벤치마크는 다음과 같습니다:
+### **MMLU (Massive Multi-task Language Understanding)**
 
-1. **MMLU (Massive Multi-task Language Understanding)**: 수학, 역사, 법률, 의학 등 57개의 작업을 포함하는 시험 질문으로 구성됩니다.
-2. **BBH (BIG-Bench Hard)**: 23개의 어려운 작업을 포함하며, PaLM이 평균 인간 평가자보다 낮은 성능을 보이는 작업들로 구성됩니다.
-3. **TyDiQA**: 8개의 유형학적으로 다양한 언어에 걸쳐 있는 질문-응답 벤치마크입니다.
-4. **MGSM (Multilingual Grade School Math)**: 수학 문제를 10개 언어로 번역한 다국어 벤치마크입니다.
+- 수학, 역사, 법률, 의학 등 57개의 작업을 포함하는 시험 질문으로 구성.
+- 다양한 학문 영역에서 모델의 지식 평가
 
-**평가 방법 및 메트릭**: MMLU와 BBH의 경우, 모델이 직접 정답을 예측하는 직접 프롬프트 방식과 추론 사슬(Chain-of-Thought, CoT) 프롬프트 방식을 모두 사용하여 평가합니다. TyDiQA는 정확한 일치 점수(Exact-Match Score)만 측정합니다. MGSM은 CoT 프롬프트 정확도만 측정합니다. 모든 벤치마크에서 주어진 퓨샷(예시)의 수는 이전 연구를 따릅니다: MMLU는 5샷, BBH는 3샷, TyDiQA는 1샷, MGSM은 8샷입니다.
+### **BBH (BIG-Bench Hard)**
 
-**정규화된 평균 메트릭**: 모델 성능을 통합적으로 평가하기 위해 정규화된 평균 메트릭을 보고합니다. 이는 MMLU-Direct, MMLU-CoT, BBH-Direct, BBH-CoT, TyDiQA-Direct, MGSM-CoT의 6개 점수의 매크로 평균입니다.
+- 23개의 어려운 작업을 포함하며, PaLM이 평균 인간 평가자보다 낮은 성능을 보이는 작업들로 구성.
 
-이 프로토콜은 다양한 벤치마크에서 모델의 전반적인 능력을 평가하고, 추론 능력과 지식 범위를 측정하는 데 중점을 둡니다【43:0†Scaling Instruction Finetuned Language Models.pdf】.
+### **TyDiQA**
+
+- 8개의 유형학적으로 다양한 언어에 걸쳐 있는 질문-응답 벤치마크.
+- 모델의 다국어 질문 응답 능력 평가
+
+### **MGSM (Multilingual Grade School Math)**
+
+- 수학 문제를 10개 언어로 번역한 다국어 벤치마크.
+
+- **평가 방법 및 메트릭**: MMLU와 BBH의 경우, 모델이 직접 정답을 예측하는 직접 프롬프트 방식과 추론 사슬(Chain-of-Thought, CoT) 프롬프트 방식을 모두 사용하여 평가.
+- **정규화된 평균 메트릭**: 모델 성능을 통합적으로 평가하기 위해 정규화된 평균 메트릭을 사용. 이는 MMLU-Direct, MMLU-CoT, BBH-Direct, BBH-CoT, TyDiQA-Direct, MGSM-CoT의 6개 점수의 Macro-Average.
 
 # 3. Scaling to 540B Parameters and 1.8K Tasks
 
-이 섹션에서는 모델의 크기와 미세 조정 작업의 수를 확장함으로써, 모델 성능에 미치는 영향을 분석합니다. 세 가지 PaLM 모델 크기(8B, 62B, 540B)를 대상으로 실험을 수행하고, 적은 수의 작업부터 많은 수의 작업(CoT, Muffin, T0-SF, NIV2)까지 순차적으로 추가하여 작업 수를 확장합니다.
-
-### 주요 발견 사항
+> 모델의 크기와 미세 조정 작업의 수를 확장시키면서 모델 성능에 미치는 영향을 분석. 세 가지 PaLM 모델 크기(8B, 62B, 540B)를 대상으로 실험을 수행하고, 적은 수의 작업부터 많은 수의 작업(CoT, Muffin, T0-SF, NIV2)까지 순차적으로 추가하여 작업 수를 확장.
+> 
 
 1. **모델 크기와 작업 수의 확장**:
-    - 모델 크기를 확장할수록, 모든 크기의 모델에서 다중 작업 지시문 미세 조정이 성능을 크게 향상시킵니다. 성능 향상은 9.4%에서 15.5%까지 다양합니다.
-    - 작업 수를 늘리면 성능이 향상되지만, 282개의 작업까지만 대부분의 향상이 이루어집니다. 추가적인 작업은 모델에 새로운 지식을 제공하지 않거나, 모델이 이미 사전 훈련에서 습득한 지식을 더 잘 표현하도록 학습하는 데서 대부분의 성능 향상이 이루어진다고 설명됩니다.
+    - 모든 크기의 모델에서 다중 작업 지시문 미세 조정이 성능을 크게 향상시킴. 성능 향상은 9.4%에서 15.5%까지 다양합니다.
+    - 작업 수를 늘리면 성능이 향상되지만, 282개의 작업까지만 대부분의 향상이 이루어집니다. 추가적인 작업은 모델에 새로운 지식을 제공하지 않거나, 모델이 이미 사전 훈련에서 습득한 지식을 더 잘 표현하도록 학습하는 데서 대부분의 성능 향상이 이루어진다고 설명됨.
 2. **모델 크기의 증가**:
-    - 모델 크기를 한 단계(예: 8B에서 62B, 62B에서 540B)씩 확장하면, 미세 조정된 모델과 미세 조정되지 않은 모델 모두에서 성능이 크게 향상됩니다.
+    - 모델 크기를 한 단계(예: 8B에서 62B, 62B에서 540B)씩 확장하면, 미세 조정된 모델과 미세 조정되지 않은 모델 모두에서 성능이 크게 향상됨.
     - 예를 들어, 8B 모델에서 15.5%의 절대적인 성능 향상이 있었지만, 540B 모델에서는 9.4%의 성능 향상이 있었습니다. 그러나 오류율의 상대적 감소는 540B 모델에서 더 크게 나타났습니다(540B 모델의 18.4% 대 8B 모델의 16.6%).
 
 ### 향후 연구 제안
 
-- 모델 크기와 미세 조정 작업 수를 더욱 확장하면 성능이 계속해서 향상될 것으로 예상됩니다. 모델 크기를 한 단계 더 확장하는 것은 상당한 성능 향상을 가져올 수 있으며, 미세 조정 작업 수를 확장하는 것도 성능을 더욱 향상시킬 수 있습니다.
+- 모델 크기와 미세 조정 작업 수를 더욱 확장하면 성능이 계속해서 향상될 것으로 예상됨.
+- 모델 크기를 한 단계 더 확장하는 것은 상당한 성능 향상을 가져올 수 있으며, 미세 조정 작업 수를 확장하는 것도 성능을 더욱 향상시킬 수 있음.
 
-이 섹션은 모델 크기와 미세 조정 작업 수를 확장함으로써 사전 훈련된 언어 모델의 성능을 어떻게 최적화할 수 있는지에 대한 통찰을 제공합니다【19†Scaling Instruction Finetuned Language Models.pdf】.
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/13df9816-ee38-4e09-a125-efce1639dfad/Untitled.png)
 
-### 4. Finetuning with Chain-of-Thought Annotations 요약
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/a41ccf8f-5766-4a6c-8aa5-ff4ee1dd459b/Untitled.png)
 
-이 섹션에서는 체인 오브 사고(Chain-of-Thought, CoT) 데이터를 포함하여 지시문 미세 조정의 효과를 탐구합니다. CoT 데이터는 모델이 단계별 추론을 수행하는 능력을 향상시키는 데 중요합니다.
+- Self-Consistency : 여러 번의 독립적인 시도 후 가장 빈번한 답을 선택하는 방법
 
-### 주요 발견 사항
+# 4. Finetuning with Chain-of-Thought Annotations
 
-1. **체인 오브 사고 데이터 포함의 이점**:
-    - CoT 데이터를 포함하면 모델의 추론 능력이 크게 향상됩니다. Flan-PaLM은 CoT 데이터 없이 수행된 이전 모델들보다 여러 벤치마크에서 뛰어난 성능을 보였습니다.
-    - CoT 데이터를 포함하지 않은 지시문 미세 조정은 오히려 추론 능력을 저하시킵니다. 그러나 단 9개의 CoT 데이터셋을 포함하면 모든 평가에서 성능이 향상됩니다.
-2. **성능 평가**:
-    - Flan-PaLM 540B 모델은 MMLU 벤치마크에서 75.2%를 달성하여 이전 모델들보다 큰 성능 향상을 이루었습니다. 이는 PaLM의 69.3%보다 높은 수치입니다.
-    - MGSM 벤치마크에서도 Flan-PaLM은 Bengali와 같은 저자원 언어에서 높은 성능을 보였습니다. 예를 들어, Bengali에서는 69.6%를 달성했습니다.
-    - GSM8K 벤치마크에서는 83.9%로 새로운 최고 성능을 기록했습니다.
-3. **추가 발견 사항**:
-    - CoT 데이터를 포함하면 복잡한 BIG-Bench 작업에서 "let's think step-by-step"과 같은 문구를 통해 제로샷 추론을 활성화할 수 있습니다.
-    - CoT 데이터가 포함된 모델은 CoT 데이터 없이 미세 조정된 모델보다 모든 평가에서 더 나은 성능을 보입니다.
+> Chain-of-Thought 데이터를 포함하여 지시문 미세 조정의 효과를 탐구. CoT 데이터는 모델이 단계별 추론을 수행하는 능력을 향상시키는 데 중요함.
+> 
 
-이 섹션은 CoT 데이터를 포함한 지시문 미세 조정이 사전 학습된 언어 모델의 성능을 어떻게 최적화할 수 있는지 보여줍니다【23†Scaling Instruction Finetuned Language Models.pdf】.
+## Finetuning on chain-of-thought improves reasoning on held-out tasks
 
-### 5. Putting It All Together 요약
+- CoT 데이터를 포함하면 모델의 추론 능력이 크게 향상됨. Flan-PaLM은 CoT 데이터 없이 수행된 이전 모델들보다 여러 벤치마크에서 뛰어난 성능을 보였음.
+- `CoT 데이터를 포함하지 않은 Instruction Fine-Tuning은 오히려 추론 능력을 저하시킴.` 그러나 단 9개의 CoT 데이터셋을 포함하면 모든 평가에서 성능이 향상됨.
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/2ec044c4-7abc-45da-899b-74055f3a032b/Untitled.png)
+
+- Flan-PaLM 540B 모델은 MMLU 벤치마크에서 75.2%를 달성하여 이전 모델들보다 큰 성능 향상을 이루었습니다. 이는 PaLM의 69.3%보다 높은 수치임.
+- MGSM 벤치마크에서도 Flan-PaLM은 Bengali와 같은 저자원 언어에서 높은 성능을 보였음. 예를 들어, Bengali에서는 69.6%를 달성함.
+- GSM8K 벤치마크에서는 83.9%로 새로운 최고 성능을 기록.
+- CoT 데이터를 포함하면 복잡한 BIG-Bench 작업에서 "let's think step-by-step"과 같은 문구를 통해 제로샷 추론을 활성화할 수 있음.
+- CoT 데이터가 포함된 모델은 CoT 데이터 없이 미세 조정된 모델보다 모든 평가에서 더 나은 성능을 보임.
+
+## Some chain-of-thought data is needed to maintain reasoning ability
+
+- 연구 팀은 CoT(Chain of Thought) 데이터 세트 9개를 포함한 미세 조정(instruction finetuning)의 효과를 분석함.
+- 평가를 두 가지 유형으로 분류: CoT 기준으로 평가한 벤치마크(MMLU, BBH, MGSM)와 비-CoT 기준으로 평가한 벤치마크(MMLU, BBH, TyDiQA).
+- non-CoT와 CoT 데이터를 모두 포함한 미세 조정이 CoT 데이터만을 포함한 것보다 성능이 높음(Figure 5 left)
+- non-CoT와 CoT 데이터를 함께 미세 조정하는 것이 non-CoT만으로 미세 조정했을 때의 성능을 떨어뜨리지 않음(Figure 5 right)
+- **CoT 데이터 포함**:
+    - 일부 CoT 데이터를 포함하여 모델을 미세 조정하면 모든 평가에서 성능이 향상됨.
+    - CoT와 비-CoT 데이터를 함께 사용하면 CoT 데이터가 포함된 평가와 비-CoT 데이터가 포함된 평가 모두에서 향상된 성능을 보임.
+- **non-CoT 데이터만 사용**:
+    - 비-CoT 데이터만 사용하여 모델을 미세 조정하면 CoT 데이터를 포함한 평가에서 성능이 크게 저하됨.
+    - 이는 CoT와 비-CoT 데이터가 서로 다른 프롬프트 패러다임을 가지고 있어, 두 유형의 데이터 모두를 포함해야 모델이 모든 유형의 평가에서 좋은 성능을 보인다는 것을 시사함.
+- **기존 연구와의 비교**:
+    - 이전 연구들은 주로 보유되지 않은 NLP 작업만을 평가하였음.
+    - 이전 모델들은 CoT 추론을 성공적으로 수행하기에는 너무 작았음.
+- **요약**:
+    - 모델이 새로운 작업을 잘 수행하려면 훈련 작업과 동일한 프롬프트 패러다임을 따르는 작업일 때만 성능이 향상됨.
+    - 따라서 모델 능력을 극대화하려면 CoT 데이터와 비-CoT 데이터가 모두 필요함.
+
+![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/92373d3a-7835-4503-90e8-337cff20b435/Untitled.png)
+
+## 4.3 Unlocking zero-shot reasoning
+
+- **요약:**
+    - CoT 데이터로 지시 미세조정을 하면 모델이 무지시(어떤 예시도 제공하지 않고) CoT 추론을 수행할 수 있게 됩니다.
+    - 이러한 무지시 설정은 모델이 몇 개의 예시 없이 독자적인 추론 능력을 보여줄 수 있는지를 평가합니다.
+- **상세 설명:**
+    - **CoT 데이터로 지시 미세조정:** CoT 데이터로 모델을 미세조정하면 'let’s think step-by-step'이라는 문구를 통해 CoT 추론 능력이 활성화됩니다.
+    - **BBH 벤치마크 테스트:** 이 방법은 23개의 어려운 BIG-Bench(BBH) 작업에서 Flan-PaLM 모델의 성능을 향상시켰습니다.
+    - **비교:** 미세조정을 하지 않은 PaLM은 CoT을 생성하여 문제를 해결하지 못했습니다.
+- **참고:**
+    - **Kojima et al. (2022)의 발견과의 비교:** 이 논문에서는 InstructGPT를 사용한 성공적인 무지시 CoT 실험을 많이 포함하고 있으며, InstructGPT는 지시 미세조정을 거쳤습니다.
+    - **PaLM의 사례:** 미세조정을 하지 않은 PaLM의 무지시 CoT가 성공적인 것은 주로 수학 단어 문제에 국한되었습니다. 이는 BBH 작업과 크게 다릅니다.
+
+# 5. Putting It All Together 요약
 
 이 섹션에서는 다양한 크기, 아키텍처 및 훈련 목표를 가진 여러 모델에 지시문 미세 조정을 적용하여 그 일반성을 보여줍니다. PaLM 모델 계열 외에도 인코더-디코더 아키텍처를 가진 T5 모델에도 지시문 미세 조정을 적용했습니다.
 

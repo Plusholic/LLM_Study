@@ -1,14 +1,18 @@
-Scaling Instruction-Finetuned Language Models
+# 3 LINE SUMMARY
 
-### Abstract
+- 지시문으로 구성된 Instruction 데이터셋을 사용해서 작업 수 확장, 모델 크기 확장, 학습 데이터에 CoT 데이터 추가하는 방법을 통해 언어 모델을 미세조정.
+- CoT 데이터로 Instruction Fine-Tuning을 하면 모델이 Few-Shot Example 없이 Zero-Shot CoT 추론을 수행할 수 있게됨. 또한 CoT 데이터를 포함하지 않은 Instruction Fine-Tuning은 오히려 추론 능력을 저하시킴
+- 다양한 데이터셋에서 전반적으로 Instruction Fine-Tuning은 사전 학습된 언어 모델의 성능과 사용성을 향상시키는 일반적인 방법임을 보여줌.
 
-> 이 논문에서는 Instruction으로 구성된 데이터셋을 사용하여 언어 모델을 미세 조정(instruction finetuning)하는 방법을 탐구. 특히, (1) 작업 수의 확장, (2) 모델 크기의 확장, (3) 연쇄적 사고(chain-of-thought) 데이터를 사용한 미세 조정을 중점적으로 다룸. 연구 결과, 이러한 방식으로 미세 조정된 모델은 다양한 모델 클래스(PaLM, T5, U-PaLM), 프롬프트 설정(Zero-Shot, Few-Shot, CoT), 평가 벤치마크(MMLU, BBH, TyDiQA, MGSM, open-ended generation, RealToxicityPrompts)에서 성능이 크게 향상되었음.
+# Abstract
+
+> Instruction으로 구성된 데이터셋을 사용하여 언어 모델을 미세 조정(instruction finetuning)하는 방법을 탐구. 특히, (1) 작업 수의 확장, (2) 모델 크기의 확장, (3) 연쇄적 사고(chain-of-thought) 데이터를 사용한 미세 조정을 중점적으로 다룸. 연구 결과, 이러한 방식으로 미세 조정된 모델은 다양한 모델 클래스(PaLM, T5, U-PaLM), 프롬프트 설정(Zero-Shot, Few-Shot, CoT), 평가 벤치마크(MMLU, BBH, TyDiQA, MGSM, open-ended generation, RealToxicityPrompts)에서 성능이 크게 향상되었음.
 > 
 - 예를 들어, 1,800개의 작업으로 Instruction Fine-Tuning된 Flan-PaLM 540B는 PaLM 540B보다 평균 9.4% 높은 성능을 보였음.
 - Flan-PaLM 540B는 여러 벤치마크에서 최첨단 성능을 달성했으며, Flan-T5 체크포인트를 공개하여 큰 모델과 비교했을 때도 강력한 퓨샷 성능을 보였음.
 - 전반적으로 Instruction Fine-Tuning은 사전 학습된 언어 모델의 성능과 사용성을 향상시키는 일반적인 방법임을 보여줌.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/e81c6319-61c8-4d83-84fb-531083479697/Untitled.png)
+![Untitled](figure1.png)
 
 # Introduction
 
@@ -26,9 +30,9 @@ Scaling Instruction-Finetuned Language Models
 > 다양한 데이터 소스를 사용하여 언어 모델을 지시문으로 미세 조정하는 방법을 다룹니다. 이를 "Flan"이라고 하며, 미세 조정된 모델의 이름 앞에 "Flan"을 붙입니다(e.g., Flan-PaLM). Flan은 여러 모델 크기와 아키텍처에 걸쳐 효과가 있음을 보여줌.
 > 
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/9a0129ed-cc66-482a-99e7-b25f53b39bab/Untitled.png)
+![Untitled](figure2.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/74332e9d-be77-4ff1-898b-865ad7df236f/Untitled.png)
+![Untitled](figure3.png)
 
 ## 2.1 Finetuning Data
 
@@ -102,9 +106,9 @@ Scaling Instruction-Finetuned Language Models
 - 모델 크기와 미세 조정 작업 수를 더욱 확장하면 성능이 계속해서 향상될 것으로 예상됨.
 - `모델 크기를 한 단계 더 확장하는 것은 상당한 성능 향상을 가져올 수 있으며, 미세 조정 작업 수를 확장하는 것도 성능을 더욱 향상시킬 수 있음.`
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/13df9816-ee38-4e09-a125-efce1639dfad/Untitled.png)
+![Untitled](figure4.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/a41ccf8f-5766-4a6c-8aa5-ff4ee1dd459b/Untitled.png)
+![Untitled](table3.png)
 
 - Self-Consistency : 여러 번의 독립적인 시도 후 가장 빈번한 답을 선택하는 방법
 
@@ -118,7 +122,7 @@ Scaling Instruction-Finetuned Language Models
 - CoT 데이터를 포함하면 모델의 추론 능력이 크게 향상됨. Flan-PaLM은 CoT 데이터 없이 수행된 이전 모델들보다 여러 벤치마크에서 뛰어난 성능을 보였음.
 - `CoT 데이터를 포함하지 않은 Instruction Fine-Tuning은 오히려 추론 능력을 저하시킴.` 그러나 단 9개의 CoT 데이터셋을 포함하면 모든 평가에서 성능이 향상됨.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/2ec044c4-7abc-45da-899b-74055f3a032b/Untitled.png)
+![Untitled](table4.png)
 
 - Flan-PaLM 540B 모델은 MMLU 벤치마크에서 75.2%를 달성하여 이전 모델들보다 큰 성능 향상을 이루었습니다. 이는 PaLM의 69.3%보다 높은 수치임.
 - MGSM 벤치마크에서도 Flan-PaLM은 Bengali와 같은 저자원 언어에서 높은 성능을 보였음. 예를 들어, Bengali에서는 69.6%를 달성함.
@@ -143,9 +147,9 @@ Scaling Instruction-Finetuned Language Models
     - 이전 모델들은 CoT 추론을 성공적으로 수행하기에는 너무 작았음.
 - **요약**:
     - 모델이 새로운 작업을 잘 수행하려면 훈련 작업과 동일한 프롬프트 패러다임을 따르는 작업일 때만 성능이 향상됨.
-    - 따라서 모델 능력을 극대화하려면 CoT 데이터와 비-CoT 데이터가 모두 필요함.
+    - 따라서 모델 능력을 극대화하려면 CoT 데이터와 Non-CoT 데이터가 모두 필요함.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/92373d3a-7835-4503-90e8-337cff20b435/Untitled.png)
+![Untitled](figure5.png)
 
 ## 4.3 Unlocking zero-shot reasoning
 
@@ -153,13 +157,13 @@ Scaling Instruction-Finetuned Language Models
 - Zero-Shot setting은 모델이 Few-Shot Example없이 독자적인 추론 능력을 보여줄 수 있는지를 평가.
 - CoT 데이터로 모델을 미세조정하면 'let’s think step-by-step'이라는 문구를 통해 CoT 추론 능력이 활성화됨. 이에 비해 미세 조정이 없는 PaLM은 이러한 문제를 해결할 수 있는 CoT를 생성하지 않음(Figure 6)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/8a567fdb-c16c-4d96-8d33-a470226d8c09/Untitled.png)
+![Untitled](figure6.png)
 
 - 이 방법은 23개의 어려운 BIG-Bench(BBH) 작업에서 Flan-PaLM 모델의 성능을 향상시킴.
 - 미세조정을 하지 않은 PaLM은 CoT을 생성하여 문제를 해결하지 못했음.
 - 미세조정을 하지 않은 PaLM의 Zero-Shot CoT의 성능이 좋은 분야는 수학 단어 문제에 국한되었음. 이는 BBH 작업과 크게 다름.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/d43fcfe5-ed46-44d9-b30b-e1b2dc05a9e7/Untitled.png)
+![Untitled](figure7.png)
 
 # 5. Putting It All Together
 
@@ -175,9 +179,9 @@ Scaling Instruction-Finetuned Language Models
 - Flan-T5-XL은 3B 파라미터를 가지지만 MMLU 점수가 GPT-3 175B 보다 높음
 - 지시문 미세 조정을 사용하면 더 작은 모델이 더 큰 모델보다 성능이 더 나을 수 있음.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/5bd94720-760a-499c-a41c-4066e84ced4c/Untitled.png)
+![Untitled](table5.png)
 
-# Usability Evaluation of Open-Ended Generation
+# 6. Usability Evaluation of Open-Ended Generation
 
 > Instruction Fine-Tuning이 모델의 개방형 질문에 대한 응답 능력에 미치는 영향을 평가. NLP 벤치마크와 자동 평가 메트릭은 인간의 선호도를 측정하는 데 충분하지 않기 때문에, 수동 평가를 통해 모델의 개방형 응답을 조사함.
 > 
@@ -187,7 +191,7 @@ Scaling Instruction-Finetuned Language Models
 - 각 모델은 온도 샘플링(temperature sampling, 𝜏=0.7)을 사용해 5개의 응답을 무작위로 생성 및 Log Probability Score로 순위 매김.
 - 두 모델의 응답을 인간 평가자들에게 제시, 더 선호하는 응답을 선택하도록 요청.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/19fd67b1-0aa7-45f9-9b6d-a8b441f60733/4c9bb460-5095-46be-9eb3-9095f4b3a591/Untitled.png)
+![Untitled](figure8.png)
 
 - `전체 190개의 평가 예제 중 Flan-PaLM 생성물은 79%의 경우에서 PaLM보다 선호되었음.`
 - 모든 Zero-Shot Setting에서 Flan-PaLM은 큰 차이로 선호되었으며, CoT 트리거 문구를 사용한 입력의 경우, Flan-PaLM에 대한 선호도가 약 10% 증가함.
@@ -195,57 +199,29 @@ Scaling Instruction-Finetuned Language Models
 - Flan-PaLM은 창의성, 맥락에 대한 추론, 복잡한 추론, 계획, 설명 등의 카테고리에서 PaLM보다 더 나은 응답을 생성.
 - Instruction Fine-Tuning이 모델의 개방형 질문 응답 능력을 향상시킨다는 것을 보여줌.
 
-### 7. Discussion 요약
+# 7. Discussion
 
-이 논문에서는 지시문 미세 조정(instruction finetuning)을 확장하여 모델의 성능을 향상시키는 방법을 탐구했습니다. 이를 위해 다음 세 가지 주요 확장을 수행했습니다:
+> Instruction Finetuning을 확장하여 모델의 성능을 향상시키는 방법을 탐구했습니다. 이를 위해 **미세 조정 작업의 수 확장,** **모델 크기의 확장, Chain-of-Thought, CoT 데이터로 미세 조정 등을 수행함.**
+> 
 
-1. **미세 조정 작업의 수 확장**: 다양한 작업에 대한 지시문 미세 조정을 통해 모델의 성능을 향상시켰습니다.
-2. **모델 크기의 확장**: 모델의 매개변수 수를 늘려 더 큰 모델을 사용함으로써 성능을 개선했습니다.
-3. **체인 오브 사고(Chain-of-Thought, CoT) 데이터로 미세 조정**: 단계적 추론을 포함한 데이터로 모델을 미세 조정하여 복잡한 추론 작업에서의 성능을 높였습니다.
+- `모델의 크기와 미세 조정 작업의 수를 확장하면 성능이 향상된다는 것을 확인`함. 특히, 모델 크기와 작업 수 모두의 확장은 성능 개선에 기여.
+- `작업 수 확장은 성능에 긍정적인 영향을 주지만, 작업 수가 많아질수록 개선 효과가 감소하는 경향이 존재.` 그럼에도 불구하고 추가적인 작업은 여전히 성능 향상에 기여함.
+- Instruction Fine-Tuning이 없는 모델과 비교할 때, 지시문 미세 조정이 된 모델의 성능 개선 폭은 줄어들지 않았으며, 이는 미래의 더 큰 모델에서도 지시문 미세 조정이 유효할 것임을 시사.
 
-### 주요 결론
+- 본 연구에서 개발한 Flan-PaLM 모델은 다양한 평가 벤치마크에서 성능을 크게 향상시킴. 예를 들어, MMLU, BBH, TyDiQA, MGSM 등의 벤치마크에서 뛰어난 성능을 보임.
+- 특히, CoT 데이터를 포함한 지시문 미세 조정은 복잡한 추론 작업에서 두드러진 성능 향상을 가져옴.
 
-1. **확장 곡선**:
-    - 모델의 크기와 미세 조정 작업의 수를 확장하면 성능이 향상된다는 것을 확인했습니다. 특히, 모델 크기와 작업 수 모두의 확장은 성능 개선에 기여합니다.
-    - 작업 수 확장은 성능에 긍정적인 영향을 주지만, 작업 수가 많아질수록 개선 효과가 감소하는 경향이 있습니다. 그럼에도 불구하고 추가적인 작업은 여전히 성능 향상에 기여합니다.
-    - 지시문 미세 조정이 없는 모델과 비교할 때, 지시문 미세 조정이 된 모델의 성능 개선 폭은 줄어들지 않았으며, 이는 미래의 더 큰 모델에서도 지시문 미세 조정이 유효할 것임을 시사합니다.
-2. **다양한 평가에서의 성능 개선**:
-    - 본 연구에서 개발한 Flan-PaLM 모델은 다양한 평가 벤치마크에서 성능을 크게 향상시켰습니다. 예를 들어, MMLU, BBH, TyDiQA, MGSM 등의 벤치마크에서 뛰어난 성능을 보였습니다.
-    - 특히, CoT 데이터를 포함한 지시문 미세 조정은 복잡한 추론 작업에서 두드러진 성능 향상을 가져왔습니다.
-3. **책임 있는 AI**:
-    - Flan-PaLM 모델은 개방형 생성 질문에서 인간 평가자들로부터 높은 평가를 받았으며, 독성 언어 평가에서도 성능이 개선되었습니다.
-    - 지시문 미세 조정된 모델은 더 작은 모델이 더 큰 모델보다 나은 성능을 보일 수 있음을 보여주었습니다.
-4. **미래 연구 방향**:
-    - 향후 연구는 모델 크기와 작업 수를 더욱 확장하여 성능을 지속적으로 향상시키는 것이 필요합니다. 또한, 지시문 미세 조정이 다양한 모델, 프롬프트 설정 및 평가 작업에 걸쳐 성능을 향상시키는 일반적인 방법임을 확인했습니다.
+- Flan-PaLM 모델은 개방형 생성 질문에서 인간 평가자들로부터 높은 평가를 받았으며, 독성 언어 평가에서도 성능이 개선되었음.
+- Instruction Fine-Tuning된 모델은 더 작은 모델이 더 큰 모델보다 나은 성능을 보일 수 있음을 보여주었음.
+- 향후 연구는 모델 크기와 작업 수를 더욱 확장하여 성능을 지속적으로 향상시키는 것이 필요. 또한, 지시문 미세 조정이 다양한 모델, 프롬프트 설정 및 평가 작업에 걸쳐 성능을 향상시키는 일반적인 방법임을 확인.
 
-이 논문은 사전 학습된 언어 모델의 성능과 사용성을 향상시키는 데 있어 지시문 미세 조정의 중요성을 강조하고, 이를 위한 구체적인 방법과 그 효과를 제시합니다【35:0†source】.
+# Conclusions
 
-### 8. Related Work 요약
+- 540B 매개변수 언어 모델로 확장
+- 1.8K 미세 조정 작업으로 확장
+- CoT 데이터를 포함
 
-이 논문은 여러 연구 영역과 관련이 있습니다. 여기에는 다중 작업 학습, 지시문 기반 미세 조정, 추론, 대형 언어 모델이 포함됩니다. 다음은 관련 연구들과의 관계를 정리한 내용입니다:
-
-1. **지시문 기반 미세 조정**:
-    - 기존 연구들은 사전 훈련된 모델을 지시문을 통해 미세 조정하여 성능과 사용성을 향상시키려 했습니다(Wei et al., 2021; Sanh et al., 2021; Ouyang et al., 2022). 이 논문은 이전 연구를 확장하여, 더 큰 규모의 모델(540B 매개변수)을 사용하고, 다양한 데이터셋과 체인 오브 사고(CoT) 데이터를 추가하여 모델의 성능을 개선했습니다.
-2. **추론 능력 향상**:
-    - 이전 연구들은 단일 추론 데이터셋을 사용하거나, 더 작은 규모의 모델에 초점을 맞췄습니다(Ling et al., 2017; Camburu et al., 2018; Rajani et al., 2019). Huang et al. (2022)는 여러 인공 CoT 데이터셋을 사용하여 다중 작업 미세 조정이 추론 성능을 향상시킨다는 것을 보여줬습니다. 이 논문은 CoT 데이터와 비-CoT 데이터를 함께 미세 조정하여 모든 평가에서 성능을 개선했습니다.
-3. **효율적인 계산 방법**:
-    - 대형 언어 모델을 확장하는 것은 성능을 향상시키지만, 많은 계산 자원을 필요로 합니다(Kaplan et al., 2020; Brown et al., 2020). 이 논문은 계산 자원을 많이 사용하지 않으면서 성능을 향상시키는 방법을 탐구했습니다. UL2R(Tay et al., 2022b)와 같이 추가적인 훈련을 통해 성능을 개선하는 연구와 유사합니다.
-4. **다양한 모델과의 결합**:
-    - 다양한 크기와 아키텍처를 가진 모델(T5, PaLM, U-PaLM)에 대해 지시문 미세 조정을 적용했습니다. 이는 지시문 미세 조정이 모델 크기와 상관없이 일반적으로 성능을 향상시킨다는 것을 보여줍니다.
-
-### 9. Conclusions 요약
-
-이 논문에서는 지시문 미세 조정을 확장하여 Flan-PaLM 모델을 훈련시켰습니다. 주요 확장은 다음과 같습니다:
-
-1. 540B 매개변수 언어 모델로 확장
-2. 1.8K 미세 조정 작업으로 확장
-3. 체인 오브 사고(CoT) 데이터를 포함
-
-### 실험 결과
-
-- **모델 크기와 작업 수 확장**: 모델 성능이 크게 향상되었습니다. 이전 지시문 미세 조정 방법은 CoT 작업에서 성능이 저하되었지만, CoT 데이터를 함께 미세 조정하면 모든 평가에서 성능이 개선되었습니다.
-- **Flan-PaLM 성능**: 여러 벤치마크에서 최고 성능을 기록했습니다. 예를 들어, MMLU에서 75.2%를 달성했습니다.
-- **사용성 향상**: 지시문 미세 조정은 제로샷 추론을 가능하게 하여 프롬프트 엔지니어링이나 퓨샷 예제를 필요로 하지 않습니다. 또한, 지시문 미세 조정은 다양한 모델 크기, 아키텍처 및 사전 훈련 목표에 호환됩니다.
+- **모델 크기와 작업 수 확장**: 모델 성능이 크게 향상되었음. 이전 지시문 미세 조정 방법은 CoT 작업에서 성능이 저하되었지만, CoT 데이터를 함께 미세 조정하면 모든 평가에서 성능이 개선되었음.
+- **Flan-PaLM 성능**: 여러 벤치마크에서 최고 성능을 기록. 예를 들어, MMLU에서 75.2%를 달성.
+- **사용성 향상**: 지시문 미세 조정은 제로샷 추론을 가능하게 하여 프롬프트 엔지니어링이나 퓨샷 예제를 필요로 하지 않음. 또한, 지시문 미세 조정은 다양한 모델 크기, 아키텍처 및 사전 훈련 목표에 호환됨.
 - **Flan-T5 모델 공개**: Flan-T5 모델을 공개하여 T5 기본 모델보다 훨씬 높은 성능을 보였습니다.
-
-이 논문은 사전 학습된 언어 모델의 성능과 사용성을 향상시키는 데 지시문 미세 조정의 중요성을 강조합니다. 이를 통해 더 큰 모델로 확장하거나 다양한 작업에 대해 성능을 개선할 수 있는 가능성을 보여줍니다

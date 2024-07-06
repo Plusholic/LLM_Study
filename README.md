@@ -143,7 +143,14 @@ Large Language Models 관련 논문 정리
     - Transformer 모델 내에서 파라미터가 균일하게 할당되어 비효율이 발생하는데, 이를 Layer-wise scaling 을 사용하여 파라미터를 효율적으로 할당함으로써 기존 모델보다 향상된 정확도를 달성.<br>
     - 사전학습 데이터를 절반 사용하면서도 OLMo에 비해 더 높은 정확도를 달성하였지만 토큰 생성 속도는 LayerNorm을 사용하는 OLMo 모델에 비하여 RMSNorm 을 사용하는 OpenELM가 느림.
     </details>
-3. [FLAN : Scaling Instruction-Finetuned Language Models(2021, 작성중)](./papers/Flan/contents.md)
+3. [FLAN : Scaling Instruction-Finetuned Language Models(2021)](./papers/Flan/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - 지시문으로 구성된 Instruction 데이터셋을 사용해서 작업 수 확장, 모델 크기 확장, 학습 데이터에 CoT 데이터 추가하는 방법을 통해 언어 모델을 미세조정.<br>
+    - CoT 데이터로 Instruction Fine-Tuning을 하면 모델이 Few-Shot Example 없이 Zero-Shot CoT 추론을 수행할 수 있게됨. 또한 CoT 데이터를 포함하지 않은 Instruction Fine-Tuning은 오히려 추론 능력을 저하시킴<br>
+    - 다양한 데이터셋에서 전반적으로 Instruction Fine-Tuning은 사전 학습된 언어 모델의 성능과 사용성을 향상시키는 일반적인 방법임을 보여줌.
+    </details>
+
 4. [HyperCLOVA X Technical Report]
 5. [LLaMA2]
 6. [Qwen]

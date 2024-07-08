@@ -31,25 +31,51 @@ ANIMATEDIFF: ANIMATE YOUR PERSONALIZED TEXT-TO-IMAGE DIFFUSION MODELS WITHOUT SP
     - `모션 모듈은 일반화된 Motion Prior를 학습함으로 다른 개인화된 T2I 모델이 매끄럽고 매력적인 애니메이션을 생성하도록 할 수 있음.`
 - **MotionLoRA**
     - Low-Rank Adaptation (LoRA)의 도움으로 소수의 참고 비디오와 훈련 반복을 통해 모션 모듈을 미세 조정.
-    - 새로운 모션 패턴에 적응하는 데 50개의 참고 비디오만 필요하며, MotionLoRA 모델은 약 30MB의 추가 저장 공간만 필요함. 이는 모델 공유 효율성을 크게 향상시킴.
+    - `새로운 모션 패턴에 적응하는 데 50개의 참고 비디오만 필요하며, MotionLoRA 모델은 약 30MB의 추가 저장 공간만 필요함.` 이는 모델 공유 효율성을 크게 향상시킴.
 - 이 프레임워크는 모델별 튜닝 없이 모션 모듈을 통합하여 매끄러운 애니메이션을 생성할 수 있음.
 - 또한 MotionLoRA라는 경량화된 파인튜닝 기법을 통해 새로운 모션 패턴에 적응할 수 있도록 설계되었음.
 - AnimateDiff는 다양한 개인화된 T2I 모델을 평가하여 그 효과를 입증하였음.
 
-<여기까지>
-
 # **Preliminary**
 
 1. **Stable Diffusion**:
-    - Stable Diffusion(SD)은 오픈 소스 기반의 텍스트-이미지(T2I) 모델로, 고품질의 개인화된 T2I 모델이 다수 존재하여 평가에 적합합니다.
-    - SD는 사전 훈련된 오토인코더의 잠재 공간에서 확산 과정을 수행하여 효율성을 높입니다.
-    - SD의 디노이징 네트워크는 추가된 노이즈를 예측하는 과정을 통해 이미지를 생성합니다.
-2. **Low-Rank Adaptation (LoRA)**:
-    - LoRA는 대형 모델의 파인튜닝을 가속화하는 방법으로, 처음에는 언어 모델 적응을 위해 제안되었습니다.
-    - 모델의 모든 매개변수를 다시 훈련하는 대신, 랭크-분해 행렬 쌍을 추가하여 새로운 가중치를 최적화합니다.
-    - 이는 원래 가중치를 고정한 채 훈련 가능 매개변수를 제한하여, 훈련 비용을 절감하고 기존 모델의 성능 저하를 방지합니다.
+    - Stable Diffusion(SD)은 오픈 소스 기반의 텍스트-이미지(T2I) 모델로, 고품질의 개인화된 T2I 모델이 다수 존재하여 평가에 적합.
+    - SD는 사전 훈련된 오토인코더의 잠재 공간에서 확산 과정을 수행하여 효율성을 높임.
+    - SD의 디노이징 네트워크는 추가된 노이즈를 예측하는 과정을 통해 이미지를 생성함.
 
-AnimateDiff의 구현에서 Stable Diffusion과 LoRA는 도메인 어댑터와 MotionLoRA의 이해를 돕는 기본 요소로 사용됩니다.
+- 사전 훈련된 Auto Encoder $\mathcal{E}(\cdot)$와 $\mathcal{D}(\cdot)$의 잠재 공간 내에서 디퓨전 진행
+- $𝑧_0=\mathcal{E}(𝑥_0)$은 다음과 같이 표현됨
+
+$$
+𝑧_𝑡=\sqrt{\bar{𝛼}_t}𝑧_0+\sqrt{1−\bar{𝛼}_𝑡}𝜖,𝜖∼𝑁(0,𝐼),
+
+$$
+
+- $\bar{\alpha_t}$는 step $t$에서의 노이즈 강도를 결정.
+- 디노이징 네트워크 $\epsilon_{\theta}(\cdot)$는 MSE Loss를 사용해서 노이즈 예측을 학습함.
+
+$$
+𝐿=\mathbb{E}_{\mathcal{E}(𝑥0),𝑦,𝜖∼𝑁(0,𝐼),𝑡}[||𝜖−𝜖_𝜃(𝑧_𝑡,𝑡,𝜏_𝜃(𝑦))||^2_2],
+$$
+
+- $y$는 이미지 $x_0$에 해당하는 텍스트 프롬프트
+- $\tau_{\theta}(\cdot)$은 프롬프트를 벡터 시퀀스로 매핑해주는 텍스트 인코더
+- $\epsilon_{\theta}(\cdot)$은 UNet으로 실행되며, 4개 해상도 레벨의 down/up 샘플 블럭으로 구성
+
+1. **Low-Rank Adaptation (LoRA)**:
+    - LoRA는 대형 모델의 파인튜닝을 가속화하는 방법으로, 처음에는 언어 모델 적응을 위해 제안되었음.
+    - 모델의 모든 매개변수를 다시 훈련하는 대신, Rank-Decomposition Matrix 쌍을 추가하여 새로운 가중치를 최적화.
+    - 이는 원래 가중치를 고정한 채 훈련 가능 매개변수를 제한하여, 훈련 비용을 절감하고 기존 모델의 성능 저하를 방지함.
+    - LoRA의 weight는 다음과 같음.
+
+$$
+\mathcal{W}' = \mathcal{W}+\Delta \mathcal{W} = \mathcal{W} + AB^T
+$$
+
+- $A \in \mathbb{R}^{m \times r}, B \in \mathbb{R}^{n \times r}$는 Rank-Decomposition Matrix 쌍이며, $r$은 하이퍼파라미터로, LoRA layer의 랭크.
+- LoRA는 오직 attention layer에만 적용하여 모델 파인튜닝의 코스트를 줄일 수 있음
+
+<여기까지>
 
 # **AnimateDiff**
 

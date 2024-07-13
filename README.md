@@ -121,11 +121,19 @@ Large Language Models 관련 논문 정리
     <details>
     <summary>3 LINE SUMMARY</summary>
     - 기존의 이미지 생성을 위한 Diffusion Model은 주로 Pixel Space에서 동작하여 많은 계산과정이 필요하였음. 이를 해결하기 위해 Latent Space에서 Diffusion Model을 적용하는 방법을 제안함</br>
-    - 이미지를 오토인코더를 통해서 잠재 공간으로 다운샘플링 하고, 여기에 점진적으로 노이즈를 추가한 후 U Net을 통해 제거하는 과정을 저친 후 다시 원본 이미지로 디코딩하여 재구성하는 방식<br>
+    - 이미지를 오토인코더를 통해서 잠재 공간으로 다운샘플링 하고, 여기에 점진적으로 노이즈를 추가한 후 U Net을 통해 제거하는 과정을 저친 후 다시 원본 이미지로 디코딩하여 재구성하는 방식</br>
     - 인패인팅, 이미지 생성, 이미지 합성, 업스케일링 등에서 GAN 등의 기존 모델과 비교했을 때 최첨단 성능을 달성하면서 계산량은 줄어듬
     </details>
 
 5. [Stable Diffusion 3 : Scaling Rectified Flow Transformers for High-Resolution Image Synthesis(2024, 작성중)](./papers/StableDiffusion3/contents.md)
+
+6. [ANIMATEDIFF: ANIMATE YOUR PERSONALIZED TEXT-TO-IMAGE DIFFUSION MODELS WITHOUT SPECIFIC TUNING(2024)](./papers/AnimateDiff/contents.md)
+    <details>
+    <summary>3 LINE SUMMARY</summary>
+    - DreamBooth와 LoRA 같은 개인화 기술은 적은 데이터로도 사용자 정의 모델을 만들 수 있게 하지만, 이러한 모델들은 이미지에만 한정되어 있음.</br>
+    - Animate Diff는 훈련 중 비디오 데이터셋과 이미지 데이터셋의 시각적 품질 차이를 줄여주는 Domain adapter, 일반화된 Motion Prior를 학습하여 T2I 모델이 매끄러운 애니메이션을 생성하도록 하는 Motion module, 소수의 참조 비디오로 Motion Module을 미세조정하는 Motion lora로 구성됨.</br>
+    - Transformer 기반 motion Module이 1D Convolution보다 더 효과적이었으며, 작은 파라미터와 적은 수의 참조 비디오(예: N=50)로도 원하는 모션 패턴을 효과적으로 학습할 수 있음. 사전 훈련된 모션 모듈은 다른 맞춤형 T2I 모델에 통합되어 자연스럽고 일관된 모션을 가진 애니메이션을 생성할 수 있음.
+    </details>
 
 ## Large Language Models
 

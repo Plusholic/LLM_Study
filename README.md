@@ -139,6 +139,8 @@ Large Language Models 관련 논문 정리
     - Transformer 기반 motion Module이 1D Convolution보다 더 효과적이었으며, 작은 파라미터와 적은 수의 참조 비디오(예: N=50)로도 원하는 모션 패턴을 효과적으로 학습할 수 있음. 사전 훈련된 모션 모듈은 다른 맞춤형 T2I 모델에 통합되어 자연스럽고 일관된 모션을 가진 애니메이션을 생성할 수 있음.
     </details>
 
+7. [MimicMotion: High-Quality Human Motion Video Generation with Confidence-aware Pose Guidance(2024, 작성중)](./papers/MimicMotion/contents.md)
+
 ## Large Language Models
 
 1. [LIMA: Less Is More for Alignment(2023)](./papers/LIMA/contents.md)
